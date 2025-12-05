@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 });
 
 // ==================== MONGO SETUP ====================
-const uri = "mongodb+srv://ShashiKumar:kumar143@footwear.pq2wkaa.mongodb.net/?retryWrites=true&w=majority";
+const uri = "process.env.MONGO_URI;";
 
 const client = new MongoClient(uri, {
     maxPoolSize: 10,
