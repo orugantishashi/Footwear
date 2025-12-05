@@ -82,7 +82,7 @@ async function syncCartCountFromServer() {
 
     try {
         const user = JSON.parse(userJson);
-        const response = await fetch(`http://localhost:3000/cart?email=${encodeURIComponent(user.email)}`);
+        const response = await fetch(`https://footwear-y0zi.onrender.com/cart?email=${encodeURIComponent(user.email)}`);
         const data = await response.json();
         if (response.ok && Array.isArray(data.items)) {
             const total = data.items.reduce((s, it) => s + (Number(it.quantity) || 0), 0);
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
         button.textContent = "Adding...";
 
         try {
-            const response = await fetch("http://localhost:3000/add-to-cart", {
+            const response = await fetch("https://footwear-y0zi.onrender.com/add-to-cart", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Fetch actual cart count from server after adding
             try {
-                const cartResponse = await fetch(`http://localhost:3000/cart?email=${encodeURIComponent(user.email)}`);
+                const cartResponse = await fetch(`https://footwear-y0zi.onrender.com/cart?email=${encodeURIComponent(user.email)}`);
                 const cartData = await cartResponse.json();
                 if (cartResponse.ok && Array.isArray(cartData.items)) {
                     const actualCount = cartData.items.reduce((sum, it) => sum + (Number(it.quantity) || 0), 0);
@@ -263,7 +263,7 @@ async function register() {
         errorElement.style.display = "none";
     }
 
-    const BASE_URL = "http://localhost:3000";
+    const BASE_URL = "https://footwear-y0zi.onrender.com";
     try {
         const response = await fetch(`${BASE_URL}/register`, {
             method: "POST",
@@ -336,7 +336,7 @@ async function login() {
         return;
     }
 
-    const BASE_URL = "http://localhost:3000";
+    const BASE_URL = "https://footwear-y0zi.onrender.com";
     try {
         console.log("[Login] Sending credentials:", { email, password });
         const response = await fetch(`${BASE_URL}/login`, {
@@ -447,7 +447,7 @@ async function logout() {
             const email = JSON.parse(userJson).email;
 
             // 🔹 Clear cart on backend
-            await fetch("http://localhost:3000/cart/clear", {
+            await fetch("https://footwear-y0zi.onrender.com/cart/clear", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
