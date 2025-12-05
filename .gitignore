@@ -1,0 +1,18 @@
+# Ignore all node_modules in entire project
+node_modules/
+
+# Ignore environment variables (optional)
+.env
+
+# Ignore log files
+*.log
+
+# Ignore Netlify
+.netlify/
+
+# Ignore VS Code internal files
+.vscode/
+
+# Ignore build files (optional)
+dist/
+build/
