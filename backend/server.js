@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 });
 
 // ==================== MONGO SETUP ====================
-const uri = "process.env.MONGO_URI;";
+const uri = process.env.MONGO_URI; 
 
 const client = new MongoClient(uri, {
     maxPoolSize: 10,
