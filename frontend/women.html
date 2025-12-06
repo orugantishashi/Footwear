@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Men's Footwear - Foot Mart</title>
+    <title>Women's Footwear - Foot Mart</title>
     <meta name="description"
-        content="Shop the latest men's footwear collection at Foot Mart. Sneakers, formal shoes, sandals, and more.">
+        content="Shop the latest women's footwear collection at Foot Mart. Heels, sneakers, sandals, and more.">
     <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -17,12 +17,12 @@
         </a>
         <ul id="nav-links">
             <li onclick="window.location.href='index.html'">Home</li>
-            <li><a href="men.html" class="active">Men</a></li>
-            <li><a href="women.html">Women</a></li>
+            <li><a href="men.html">Men</a></li>
+            <li><a href="women.html" class="active">Women</a></li>
             <li><a href="kids.html">Kids</a></li>
         </ul>
         <form id="nav-search-form" class="nav-search" autocomplete="off">
-            <input type="search" id="nav-search-input" placeholder="Search Nike shoes" aria-label="Search Nike shoes">
+            <input type="search" id="nav-search-input" placeholder="Search shoes" aria-label="Search shoes">
             <button type="submit">Search</button>
         </form>
         <div id="cart" class="cart" onclick="window.location.href='cart.html'">
@@ -42,7 +42,7 @@
     </nav>
 
 
-    <h3 id="section-title" class="title">Men's Collection</h3>
+    <h3 id="section-title" class="title">Women's Collection</h3>
     <div id="product-grid" class="cards">
         <!-- Products will be loaded here by JS -->
     </div>
@@ -55,10 +55,10 @@
     <script src="products.js"></script>
     <script src="operation.js"></script>
     <script>
-        // Automatically load men's products when this page loads
+        // Automatically load women's products when this page loads
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof loadCategoryProducts === 'function') {
-                loadCategoryProducts('mens');
+                loadCategoryProducts('womens');
             }
         });
     </script>
