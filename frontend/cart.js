@@ -77,7 +77,7 @@ window.loadCart = async function loadCart() {
     const user = JSON.parse(userJson);
 
     try {
-        const response = await fetch(`http://localhost:3000/cart?email=${encodeURIComponent(user.email)}`);
+        const response = await fetch(`https://footwear-y0zi.onrender.com/cart?email=${encodeURIComponent(user.email)}`);
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
@@ -195,11 +195,11 @@ async function handleCartAction(id, action, targetElement) {
 
     try {
         const email = JSON.parse(userJson).email;
-        let url = 'http://localhost:3000/cart/update';
+        let url = 'https://footwear-y0zi.onrender.com/cart/update';
         let body = { email, id: String(id) };
 
         if (action === 'remove') {
-            url = 'http://localhost:3000/cart/remove';
+            url = 'https://footwear-y0zi.onrender.com/cart/remove';
         } else {
             body.delta = action === 'increase' ? 1 : -1;
         }
