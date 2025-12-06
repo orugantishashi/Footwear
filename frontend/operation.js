@@ -217,15 +217,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggle = document.querySelector(".toggle");
     const mobileToggle = document.getElementById("mobile-dark-mode-toggle");
 
+    // 1. Check for saved dark mode preference on load
+    const savedDarkMode = localStorage.getItem("darkMode");
+    if (savedDarkMode === "enabled") {
+        document.body.classList.add("dark-mode");
+    }
+
+    // 2. Function to update button text
     function updateToggleText() {
         const isDark = document.body.classList.contains("dark-mode");
         if (toggle) toggle.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
         if (mobileToggle) mobileToggle.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
     }
 
+    // Initial text update based on loaded state
+    updateToggleText();
+
+    // 3. Toggle Function
     function toggleDarkMode(e) {
         if (e) e.preventDefault();
         document.body.classList.toggle("dark-mode");
+
+        // Save preference to localStorage
+        if (document.body.classList.contains("dark-mode")) {
+            localStorage.setItem("darkMode", "enabled");
+        } else {
+            localStorage.setItem("darkMode", "disabled");
+        }
+
         updateToggleText();
     }
 
@@ -559,9 +578,76 @@ async function loadCategoryProducts(category) {
 }
 
 // ------------------ HAMBURGER MENU TOGGLE ------------------
+// ------------------ CHANGE PASSWORD FUNCTION ------------------
+async function changePassword() {
+    const emailInput = document.getElementById("cpemail");
+    const oldPasswordInput = document.getElementById("oldpassword");
+    const newPasswordInput = document.getElementById("newpassword");
+    const errorElement = document.getElementById("change-pass-error");
+
+    const email = emailInput?.value.trim();
+    const currentPassword = oldPasswordInput?.value.trim();
+    const newPassword = newPasswordInput?.value.trim();
+
+    if (errorElement) {
+        errorElement.textContent = "";
+        errorElement.style.display = "none";
+    }
+
+    if (!currentPassword || !newPassword) {
+        if (errorElement) {
+            errorElement.textContent = "All fields are required!";
+            errorElement.style.display = "block";
+            errorElement.style.color = "red";
+        }
+        return;
+    }
+
+    const BASE_URL = "https://footwear-y0zi.onrender.com";
+    try {
+        const response = await fetch(`${BASE_URL}/change-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, currentPassword, newPassword }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            const errorMsg = data.message || "Failed to update password";
+            if (errorElement) {
+                errorElement.textContent = errorMsg;
+                errorElement.style.display = "block";
+                errorElement.style.color = "red";
+            }
+            return;
+        }
+
+        alert("Password changed successfully! Please login with your new password.");
+        logout(); // Force logout/clear storage
+    } catch (err) {
+        console.error("Change password error:", err);
+        if (errorElement) {
+            errorElement.textContent = "Server error. Please try again.";
+            errorElement.style.display = "block";
+            errorElement.style.color = "red";
+        }
+    }
+}
+
+// ------------------ HAMBURGER MENU TOGGLE & FORGOT PASSWORD ------------------
 document.addEventListener("DOMContentLoaded", () => {
     const hamburger = document.getElementById("hamburger");
     const navContent = document.getElementById("nav-content");
+
+    // Forgot Password Handler
+    const forgotPassLink = document.querySelector(".forgot-pass");
+    if (forgotPassLink) {
+        forgotPassLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            alert("Forgot Password feature is coming soon!");
+        });
+    }
 
     if (hamburger && navContent) {
         hamburger.addEventListener("click", () => {
@@ -577,4 +663,38 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // ------------------ PROFILE MENU HANDLERS ------------------
+    const changePassBtn = document.getElementById("change-password");
+    if (changePassBtn) {
+        changePassBtn.addEventListener("click", () => {
+            // Redirect to login page with a hash to open change password view
+            window.location.href = "login.html#change-password";
+        });
+    }
+
+    // Check if we are on login.html with #change-password
+    if (window.location.hash === "#change-password" && document.getElementById("change-pass-box")) {
+        const userJson = localStorage.getItem("user");
+        if (userJson) {
+            const user = JSON.parse(userJson);
+            // Hide other boxes
+            const loginBox = document.getElementById("login-box");
+            const regBox = document.getElementById("register-box");
+            const changeBox = document.getElementById("change-pass-box");
+
+            if (loginBox) loginBox.classList.add("hidden");
+            if (regBox) regBox.classList.add("hidden");
+            if (changeBox) {
+                changeBox.classList.remove("hidden");
+                // Pre-fill email
+                const emailField = document.getElementById("cpemail");
+                if (emailField) emailField.value = user.email;
+            }
+        }
+    }
 });
+
+function goBackFromChangePass() {
+    window.location.href = "index.html";
+}

@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!DOCTYPE html>
-<html lang="en">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login / Register</title>
     <link rel="stylesheet" href="login.css">
 </head>
@@ -59,6 +57,30 @@
 
             <p class="switch-text">
                 Already have an account? <span onclick="showLogin()" class="link">Login here</span>
+            </p>
+        </div>
+
+        <div class="form-box hidden" id="change-pass-box">
+            <h2>Change Password</h2>
+            <p class="subtitle">Secure your account</p>
+
+            <div class="input-group">
+                <input type="email" id="cpemail" placeholder="Confirmed Email" required readonly
+                    style="background-color: #e9ecef;">
+            </div>
+            <div class="input-group">
+                <input type="password" id="oldpassword" placeholder="Current Password" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="newpassword" placeholder="New Password" required>
+            </div>
+
+            <p id="change-pass-error" class="error-message"></p>
+
+            <button onclick="changePassword()" class="btn-primary">Update Password</button>
+
+            <p class="switch-text">
+                <span onclick="goBackFromChangePass()" class="link">Cancel</span>
             </p>
         </div>
     </div>

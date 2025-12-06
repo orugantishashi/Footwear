@@ -45,7 +45,6 @@
         <li><a href="men.html">Men</a></li>
         <li><a href="women.html">Women</a></li>
         <li><a href="kids.html">Kids</a></li>
-        <li class="mobile-only"><a href="#" id="mobile-dark-mode-toggle">Dark Mode</a></li>
       </ul>
     </div>
     <form id="nav-search-form" class="nav-search" autocomplete="off">
@@ -73,222 +72,274 @@
 
   </nav>
 
+  <!-- Mobile Category Scroll Bar -->
+  <div class="category-scroll-container">
+    <a href="index.html" class="cat-item">
+      <img src="./images/banners/mens one.jpg" alt="All">
+      <span>All</span>
+    </a>
+    <a href="men.html" class="cat-item">
+      <img src="./images/products/shoes/shoe 1.jpg" alt="Men">
+      <span>Men</span>
+    </a>
+    <a href="women.html" class="cat-item">
+      <img src="./images/banners/orginal/womens two.jpg" alt="Women">
+      <span>Women</span>
+    </a>
+    <a href="kids.html" class="cat-item">
+      <img src="./images/banners/kids.jpg" alt="Kids">
+      <span>Kids</span>
+    </a>
 
-  <!-- Banner -->
+    <!-- Banner -->
 
-  <section class="banner">
-    <img src="./images/banners/mens banner.jpg!bw700" alt="Mens Banner" />
-  </section>
+    <section class="banner">
+      <img src="./images/banners/mens banner.jpg!bw700" alt="Mens Banner" />
+    </section>
 
-  <!-- Category Cards -->
-  <h2 class="title">Categorys</h2>
-  <section class="cards">
-    <div class="card">
-      <a style="text-decoration: none; color: inherit;" href="men.html">
-        <img src="./images/banners/mens one.jpg" alt="Mens Category" />
-        <h3> Men </h3>
-      </a>
-    </div>
+    <!-- Category Cards -->
+    <h2 class="title">Categorys</h2>
+    <section class="cards">
+      <div class="card">
+        <a style="text-decoration: none; color: inherit;" href="men.html">
+          <img src="./images/banners/mens one.jpg" alt="Mens Category" />
+          <h3> Men </h3>
+        </a>
+      </div>
 
-    <div class="card">
-      <a style="text-decoration: none; color: inherit;" href="women.html">
-        <img src="./images/banners/orginal/womens two.jpg" alt="Women Category" />
-        <h3>Women</h3>
-      </a>
-    </div>
+      <div class="card">
+        <a style="text-decoration: none; color: inherit;" href="women.html">
+          <img src="./images/banners/orginal/womens two.jpg" alt="Women Category" />
+          <h3>Women</h3>
+        </a>
+      </div>
 
-    <div class="card">
-      <a style="text-decoration: none; color: inherit;" href="kids.html">
-        <img src="./images/banners/kids.jpg" alt="Kids Category" />
-        <h3>Kids</h3>
-      </a>
-    </div>
-  </section>
+      <div class="card">
+        <a style="text-decoration: none; color: inherit;" href="kids.html">
+          <img src="./images/banners/kids.jpg" alt="Kids Category" />
+          <h3>Kids</h3>
+        </a>
+      </div>
+    </section>
 
-  <!-- Best Sellers -->
-  <h3 class="title">Best Sellers</h3>
-  <div class="shoes">
-    <div class="product-card" data-id="1" onclick="viewProduct(101)">
-      <img src="./images/products/shoes/shoe 1.jpg" alt="Shoe 1" />
-      <h3><span>Nike Air Max</span></h3>
-      <p>Men's Running Shoes</p>
-      <span class="price">₹4,999</span>
-      <button class="buynow">Add Cart</button>
-    </div>
-
-
-    <div class="product-card" data-id="2" onclick="viewProduct(102)">
-      <img src="./images/products/shoes/shoe 2.jpg" alt="Shoe 2" />
-      <h3>Adidas Ultraboost</h3>
-      <p>Women's Sports Shoes</p>
-      <span class="price">₹5,499</span>
-      <button class="buynow">Add Cart</button>
-    </div>
-
-    <div class="product-card" data-id="3" onclick="viewProduct(103)">
-      <img src="./images/products/shoes/shoe 3.jpg" alt="Shoe 3" />
-      <h3>Puma Classic</h3>
-      <p>Unisex Sneakers</p>
-      <span class="price">₹3,299</span>
-      <button class="buynow">Add Cart</button>
-    </div>
-
-    <div class="product-card" data-id="4" onclick="viewProduct(104)">
-      <img src="./images/products/shoes/shoe 4.jpg" alt="Shoe 4" />
-      <h3>Reebok Flex</h3>
-      <p>Kids' Shoes</p>
-      <span class="price">₹2,199</span>
-      <button class="buynow">Add Cart</button>
-    </div>
-
-    <div class="product-card" data-id="5" onclick="viewProduct(105)">
-      <img src="./images/products/shoes/shoe 5.jpg" alt="Shoe 5" />
-      <h3>Skechers GoWalk</h3>
-      <p>Comfort Walking Shoes</p>
-      <span class="price">₹3,799</span>
-      <button class="buynow">Add Cart</button>
-    </div>
-
-    <div class="product-card" data-id="6" onclick="viewProduct(106)">
-      <img src="./images/products/shoes/shoe 6.jpg" alt="Shoe 6" />
-      <h3>RedTap Shoe</h3>
-      <p>Casual Shoes Wit Comfort And Reilable</p>
-      <span class="price">₹2,999</span>
-      <button class="buynow">Add Cart</button>
-    </div>
-  </div>
-
-  <!------Slippers Section----->
-  <div class="slipperbanners">
-    <img src="./images/banners/orginal/slippers.jpg" alt="Slippers Banner" />
-  </div>
-  <div>
-    <h3 class="title">Best Slippers</h3>
+    <!-- Best Sellers -->
+    <h3 class="title">Best Sellers</h3>
     <div class="shoes">
-      <div class="product-card" data-id="7" onclick="viewProduct(107)">
-        <img src="./images/products/slippers/men img 1.webp" alt="slipper1">
-        <h3>Adidas</h3>
-        <p>Casual Wit Comfort And Reilable</p>
-        <span class="price">₹999</span>
-        <button class="buynow">Add Cart</button>
-      </div>
-      <div class="product-card" data-id="8" onclick="viewProduct(108)">
-        <img src="./images/products/slippers/men img 2.webp" alt="slipper2">
-        <h3>WoodLand</h3>
-        <p>ComfortStep Triple-Strap Sandals</p>
-        <span class="price">₹2,599</span>
-        <button class="buynow">Add Cart</button>
-      </div>
-      <div class="product-card" data-id="9" onclick="viewProduct(109)">
-        <img src="./images/products/slippers/men img 4.webp" alt="slipper4">
-        <h3>Bata</h3>
-        <p>Casuals</p>
-        <span class="price">₹1,299</span>
+      <div class="product-card" data-id="1" onclick="viewProduct(101)">
+        <img src="./images/products/shoes/shoe 1.jpg" alt="Shoe 1" />
+        <h3><span>Nike Air Max</span></h3>
+        <p>Men's Running Shoes</p>
+        <span class="price">₹4,999</span>
         <button class="buynow">Add Cart</button>
       </div>
 
-      <div class="product-card" data-id="10" onclick="viewProduct(110)">
-        <img src="./images/products/slippers/men img 5.webp" alt="slipper5">
-        <h3>Walkaroo</h3>
-        <p>Casual Wit Comfort</p>
-        <span class="price">₹999</span>
+
+      <div class="product-card" data-id="2" onclick="viewProduct(102)">
+        <img src="./images/products/shoes/shoe 2.jpg" alt="Shoe 2" />
+        <h3>Adidas Ultraboost</h3>
+        <p>Women's Sports Shoes</p>
+        <span class="price">₹5,499</span>
         <button class="buynow">Add Cart</button>
       </div>
 
-      <div class="product-card" data-id="11" onclick="viewProduct(111)">
-        <img src="./images/products/slippers/men img 6.webp" alt="slipper6">
-        <h3>Adidas</h3>
-        <p>Casual Wit Comfort And Reilable</p>
-        <span class="price">₹999</span>
+      <div class="product-card" data-id="3" onclick="viewProduct(103)">
+        <img src="./images/products/shoes/shoe 3.jpg" alt="Shoe 3" />
+        <h3>Puma Classic</h3>
+        <p>Unisex Sneakers</p>
+        <span class="price">₹3,299</span>
         <button class="buynow">Add Cart</button>
       </div>
 
-      <div class="product-card" data-id="12" onclick="viewProduct(112)">
-        <img src="./images/products/slippers/men img 7.webp" alt="slipper7">
-        <h3>Walkaroo</h3>
-        <p> Reilable</p>
-        <span class="price">₹799</span>
+      <div class="product-card" data-id="4" onclick="viewProduct(104)">
+        <img src="./images/products/shoes/shoe 4.jpg" alt="Shoe 4" />
+        <h3>Reebok Flex</h3>
+        <p>Kids' Shoes</p>
+        <span class="price">₹2,199</span>
         <button class="buynow">Add Cart</button>
       </div>
 
-      <div class="product-card" data-id="13" onclick="viewProduct(113)">
-        <img src="./images/products/slippers/men img 9.webp" alt="slipper9">
-        <h3>Adidas</h3>
-        <p>Casual Wit Comfort And Reilable</p>
-        <span class="price">₹1,399</span>
-        <button class="buynow">Add Cart</button>
-      </div>
-      <div class="product-card" data-id="14" onclick="viewProduct(114)">
-        <img src="./images/products/slippers/men img 10.webp" alt="slipper10">
-        <h3>Paragon</h3>
-        <p> Reilable</p>
-        <span class="price">₹699</span>
+      <div class="product-card" data-id="5" onclick="viewProduct(105)">
+        <img src="./images/products/shoes/shoe 5.jpg" alt="Shoe 5" />
+        <h3>Skechers GoWalk</h3>
+        <p>Comfort Walking Shoes</p>
+        <span class="price">₹3,799</span>
         <button class="buynow">Add Cart</button>
       </div>
 
-      <div class="product-card" data-id="15" onclick="viewProduct(115)">
-        <img src="./images/products/slippers/men img 11.webp" alt="slipper11">
-        <h3>Bata</h3>
-        <p>DayLite Comfort Sandals</p>
-        <span class="price">₹999</span>
+      <div class="product-card" data-id="6" onclick="viewProduct(106)">
+        <img src="./images/products/shoes/shoe 6.jpg" alt="Shoe 6" />
+        <h3>RedTap Shoe</h3>
+        <p>Casual Shoes Wit Comfort And Reilable</p>
+        <span class="price">₹2,999</span>
         <button class="buynow">Add Cart</button>
       </div>
     </div>
-  </div>
 
-  <!-- Newsletter Section -->
-  <section class="newsletter">
-    <h2>Subscribe to our Newsletter</h2>
-    <p>Get the latest updates on new products and upcoming sales.</p>
-    <form class="newsletter-form">
-      <input type="email" placeholder="Enter your email" required>
-      <button type="submit">Subscribe</button>
-    </form>
-  </section>
+    <!------Slippers Section----->
+    <div class="slipperbanners">
+      <img src="./images/banners/orginal/slippers.jpg" alt="Slippers Banner" />
+    </div>
+    <div>
+      <h3 class="title">Best Slippers</h3>
+      <div class="shoes">
+        <div class="product-card" data-id="7" onclick="viewProduct(107)">
+          <img src="./images/products/slippers/men img 1.webp" alt="slipper1">
+          <h3>Adidas</h3>
+          <p>Casual Wit Comfort And Reilable</p>
+          <span class="price">₹999</span>
+          <button class="buynow">Add Cart</button>
+        </div>
+        <div class="product-card" data-id="8" onclick="viewProduct(108)">
+          <img src="./images/products/slippers/men img 2.webp" alt="slipper2">
+          <h3>WoodLand</h3>
+          <p>ComfortStep Triple-Strap Sandals</p>
+          <span class="price">₹2,599</span>
+          <button class="buynow">Add Cart</button>
+        </div>
+        <div class="product-card" data-id="9" onclick="viewProduct(109)">
+          <img src="./images/products/slippers/men img 4.webp" alt="slipper4">
+          <h3>Bata</h3>
+          <p>Casuals</p>
+          <span class="price">₹1,299</span>
+          <button class="buynow">Add Cart</button>
+        </div>
 
-  <!-- Professional Footer -->
-  <footer>
-    <div class="footer-container">
-      <div class="footer-col">
-        <h3>Foot Mart</h3>
-        <p style="color: #bbb; line-height: 1.6;">Your one-stop destination for premium footwear. Quality, comfort,
-          and style in every step.</p>
-      </div>
-      <div class="footer-col">
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="men.html">Men's Collection</a></li>
-          <li><a href="women.html">Women's Collection</a></li>
-          <li><a href="kids.html">Kids' Collection</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h3>Customer Care</h3>
-        <ul>
-          <li><a href="#">Track Order</a></li>
-          <li><a href="#">Shipping Policy</a></li>
-          <li><a href="#">Returns & Exchange</a></li>
-          <li><a href="#">Contact Us</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h3>Follow Us</h3>
-        <div class="social-links">
-          <a href="#">FB</a>
-          <a href="#">IG</a>
-          <a href="#">TW</a>
-          <a href="#">YT</a>
+        <div class="product-card" data-id="10" onclick="viewProduct(110)">
+          <img src="./images/products/slippers/men img 5.webp" alt="slipper5">
+          <h3>Walkaroo</h3>
+          <p>Casual Wit Comfort</p>
+          <span class="price">₹999</span>
+          <button class="buynow">Add Cart</button>
+        </div>
+
+        <div class="product-card" data-id="11" onclick="viewProduct(111)">
+          <img src="./images/products/slippers/men img 6.webp" alt="slipper6">
+          <h3>Adidas</h3>
+          <p>Casual Wit Comfort And Reilable</p>
+          <span class="price">₹999</span>
+          <button class="buynow">Add Cart</button>
+        </div>
+
+        <div class="product-card" data-id="12" onclick="viewProduct(112)">
+          <img src="./images/products/slippers/men img 7.webp" alt="slipper7">
+          <h3>Walkaroo</h3>
+          <p> Reilable</p>
+          <span class="price">₹799</span>
+          <button class="buynow">Add Cart</button>
+        </div>
+
+        <div class="product-card" data-id="13" onclick="viewProduct(113)">
+          <img src="./images/products/slippers/men img 9.webp" alt="slipper9">
+          <h3>Adidas</h3>
+          <p>Casual Wit Comfort And Reilable</p>
+          <span class="price">₹1,399</span>
+          <button class="buynow">Add Cart</button>
+        </div>
+        <div class="product-card" data-id="14" onclick="viewProduct(114)">
+          <img src="./images/products/slippers/men img 10.webp" alt="slipper10">
+          <h3>Paragon</h3>
+          <p> Reilable</p>
+          <span class="price">₹699</span>
+          <button class="buynow">Add Cart</button>
+        </div>
+
+        <div class="product-card" data-id="15" onclick="viewProduct(115)">
+          <img src="./images/products/slippers/men img 11.webp" alt="slipper11">
+          <h3>Bata</h3>
+          <p>DayLite Comfort Sandals</p>
+          <span class="price">₹999</span>
+          <button class="buynow">Add Cart</button>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2025 Foot Mart. All Rights Reserved. | Designed for Comfort.</p>
-    </div>
-  </footer>
 
-  <script src="operation.js"></script>
-  <script src="sneakerApi.js"></script>
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+      <h2>Subscribe to our Newsletter</h2>
+      <p>Get the latest updates on new products and upcoming sales.</p>
+      <form class="newsletter-form">
+        <input type="email" placeholder="Enter your email" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </section>
+
+    <!-- Professional Footer -->
+    <footer>
+      <div class="footer-container">
+        <div class="footer-col">
+          <h3>Foot Mart</h3>
+          <p style="color: #bbb; line-height: 1.6;">Your one-stop destination for premium footwear. Quality, comfort,
+            and style in every step.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="men.html">Men's Collection</a></li>
+            <li><a href="women.html">Women's Collection</a></li>
+            <li><a href="kids.html">Kids' Collection</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Customer Care</h3>
+          <ul>
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Returns & Exchange</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Follow Us</h3>
+          <div class="social-links">
+            <a href="#">FB</a>
+            <a href="#">IG</a>
+            <a href="#">TW</a>
+            <a href="#">YT</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Foot Mart. All Rights Reserved. | Designed for Comfort.</p>
+      </div>
+    </footer>
+
+    <script src="operation.js"></script>
+    <script src="sneakerApi.js"></script>
+    <!-- Mobile Bottom Navigation -->
+    <div class="bottom-nav">
+      <a href="index.html" class="bottom-nav-item">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </span>
+        <span>Home</span>
+      </a>
+      <a href="cart.html" class="bottom-nav-item">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+        </span>
+        <span>Cart</span>
+      </a>
+      <a href="login.html" class="bottom-nav-item">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </span>
+        <span>Account</span>
+      </a>
+    </div>
 </body>
 
 </html>

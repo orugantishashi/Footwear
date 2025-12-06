@@ -8,21 +8,30 @@
     <meta name="description"
         content="Shop the latest kids' footwear collection at Foot Mart. Sneakers, boots, sandals, and more.">
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="hamburger.css" />
 </head>
 
 <body>
     <nav>
-        <a href="index.html" style="text-decoration:none;">
+        <a href="index.html" style="text-decoration: none;">
             <h1>Foot Mart</h1>
         </a>
-        <ul id="nav-links">
-            <li onclick="window.location.href='index.html'">Home</li>
-            <li><a href="men.html">Men</a></li>
-            <li><a href="women.html">Women</a></li>
-            <li><a href="kids.html" class="active">Kids</a></li>
-        </ul>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-content" id="nav-content">
+            <ul id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="men.html">Men</a></li>
+                <li><a href="women.html">Women</a></li>
+                <li><a href="kids.html" class="active">Kids</a></li>
+
+            </ul>
+        </div>
         <form id="nav-search-form" class="nav-search" autocomplete="off">
-            <input type="search" id="nav-search-input" placeholder="Search shoes" aria-label="Search shoes">
+            <input type="search" id="nav-search-input" placeholder="Search Nike shoes" aria-label="Search Nike shoes">
             <button type="submit">Search</button>
         </form>
         <div id="cart" class="cart" onclick="window.location.href='cart.html'">
@@ -36,6 +45,7 @@
             <div id="profile-menu" class="profile-menu hidden">
                 <p id="profile-name"></p>
                 <button id="edit-details">Edit details</button>
+                <button id="change-password">Change Password</button>
                 <button id="logout">Logout</button>
             </div>
         </div>
@@ -62,6 +72,41 @@
             }
         });
     </script>
+
+    <!-- Mobile Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="index.html" class="bottom-nav-item">
+            <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </span>
+            <span>Home</span>
+        </a>
+        <a href="cart.html" class="bottom-nav-item">
+            <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+            </span>
+            <span>Cart</span>
+        </a>
+        <a href="login.html" class="bottom-nav-item">
+            <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </span>
+            <span>Account</span>
+        </a>
+    </div>
 </body>
 
 </html>

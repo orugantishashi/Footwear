@@ -47,30 +47,8 @@
         margin-right: 10px;
     }
 
-    /* 2. Logo next to Hamburger */
-    nav h1 {
-        order: 2;
-        font-size: 1.4rem;
-        flex: 0 1 auto;
-        width: auto;
-        text-align: left;
-        margin-right: auto;
-        /* Pushes right-side items to the right */
-    }
-
-    /* 3. Right Side Items (Login, Cart, Profile) - Toggle removed from here */
-    .login,
-    .cart,
-    #profile {
-        order: 3;
-        width: auto;
-        margin: 0 2px;
-        padding: 5px 8px;
-        font-size: 0.9rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
+    /* 2. Logo next to Hamburger - Handled by style.css */
+    /* 3. Right Side Items (Login, Cart, Profile) - Handled by style.css */
 
     /* Hide the main toggle button on mobile */
     .toggle {
@@ -89,24 +67,7 @@
         border: none;
     }
 
-    /* 4. Search Bar - Full Width on Second Row */
-    .nav-search {
-        order: 4;
-        width: 100%;
-        max-width: 100%;
-        flex: 1 1 100%;
-        margin-top: 10px;
-        display: flex;
-    }
-
-    .nav-search input {
-        flex-grow: 1;
-        border-radius: 4px 0 0 4px;
-    }
-
-    .nav-search button {
-        border-radius: 0 4px 4px 0;
-    }
+    /* 4. Search Bar - Handled by style.css */
 
     /* 5. Navigation Menu Content */
     .nav-content {
