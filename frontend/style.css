@@ -9,6 +9,8 @@ body {
     font-family: 'Times New Roman', LTimes, serif;
     background-color: #f8f8f8;
     color: #222;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 .login {
@@ -1165,106 +1167,7 @@ body.dark-mode .cat-item img {
 
     }
 
-    nav {
-        flex-wrap: wrap;
-        padding: 10px 15px;
-        gap: 8px;
-    }
 
-    nav h1 {
-        font-size: 1.5rem;
-        flex: 1 1 100%;
-        text-align: center;
-    }
-
-    nav ul {
-        flex: 1 1 auto;
-        gap: 8px;
-        font-size: 0.85rem;
-    }
-
-    nav li {
-        padding: 4px 8px;
-    }
-
-    .nav-search {
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
-
-    #nav-actions {
-        margin: 0;
-        flex: 1 1 100%;
-        justify-content: center;
-    }
-
-    .banner,
-    .slipperbanners {
-        height: auto;
-    }
-
-    .cards {
-        grid-template-columns: 1fr;
-    }
-
-    .card:hover {
-        transform: none !important;
-        transition: none !important;
-        cursor: default !important;
-    }
-
-    .card img {
-        height: 200px;
-    }
-
-    .product-card img {
-        height: 180px;
-        border-radius: 0;
-        object-fit: contain;
-        background-color: #fff;
-    }
-
-    .shoes {
-        padding: 10px 15px;
-    }
-
-    .product-card {
-        flex: 0 0 220px;
-    }
-
-    .newsletter {
-        padding: 25px 15px;
-    }
-
-    .newsletter-form {
-        flex-direction: column;
-    }
-
-    .newsletter-form input,
-    .newsletter-form button {
-        width: 100%;
-        margin-bottom: 8px;
-    }
-
-    .footer-container {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: 25px;
-    }
-
-    .footer-col h3::after {
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .social-links {
-        justify-content: center;
-    }
-
-    .mobile-only {
-        display: block;
-        /* show only on mobile */
-    }
 }
 
 @media (max-width: 480px) {
