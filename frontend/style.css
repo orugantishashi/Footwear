@@ -473,7 +473,7 @@ nav li a {
     display: block;
     margin-top: 10px;
     font-size: 1.1rem;
-    color: #e53935;
+    color: #C62828;
     font-weight: bold;
     letter-spacing: 1px;
 }
@@ -619,6 +619,103 @@ footer {
     border-top: 1px solid #333;
     color: #888;
     font-size: 0.9rem;
+}
+
+/* Hamburger Menu Styles */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1001;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Mobile Hamburger Menu */
+@media (max-width: 768px) {
+    nav {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 10px 15px;
+        gap: 0;
+    }
+
+    .hamburger {
+        display: flex;
+        order: 1;
+        margin-left: 0;
+        margin-right: 10px;
+    }
+
+    .toggle {
+        display: none;
+    }
+
+    .mobile-only {
+        display: block;
+    }
+
+    .cart {
+        background: transparent;
+        border: none;
+    }
+
+    .nav-content {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        order: 5;
+        gap: 10px;
+        padding: 15px 0;
+        background: #fff;
+        border-top: 1px solid #eee;
+        margin-top: 10px;
+    }
+
+    .nav-content.active {
+        display: flex;
+    }
+
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        gap: 5px;
+    }
+
+    nav li {
+        text-align: left;
+        padding: 10px 20px;
+        width: 100%;
+        border-bottom: 1px solid #f0f0f0;
+    }
+}
+
+@media (max-width: 480px) {
+    nav h1 {
+        font-size: 1.3rem;
+    }
 }
 
 
