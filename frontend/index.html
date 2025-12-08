@@ -124,7 +124,7 @@
   <!-- Best Sellers -->
   <h3 class="title">Best Sellers</h3>
   <div class="shoes">
-    <div class="product-card" data-id="1" onclick="viewProduct(101)">
+    <div class="product-card" data-id="1" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(101)">
       <img src="./images/products/shoes/shoe 1.webp" alt="Shoe 1" />
       <h3><span>Nike Air Max</span></h3>
       <p>Men's Running Shoes</p>
@@ -133,7 +133,7 @@
     </div>
 
 
-    <div class="product-card" data-id="2" onclick="viewProduct(102)">
+    <div class="product-card" data-id="2" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(102)">
       <img src="./images/products/shoes/shoe 2.webp" alt="Shoe 2" />
       <h3>Adidas Ultraboost</h3>
       <p>Women's Sports Shoes</p>
@@ -141,36 +141,36 @@
       <button class="buynow">Add Cart</button>
     </div>
 
-    <div class="product-card" data-id="3" onclick="viewProduct(103)">
+    <div class="product-card" data-id="3" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(103)">
       <img src="./images/products/shoes/shoe 3.webp" alt="Shoe 3" />
       <h3>Puma Classic</h3>
       <p>Unisex Sneakers</p>
       <span class="price">₹3,299</span>
-      <button class="buynow">Add Cart</button>
+      <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
     </div>
 
-    <div class="product-card" data-id="4" onclick="viewProduct(104)">
+    <div class="product-card" data-id="4" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(104)">
       <img src="./images/products/shoes/shoe 4.webp" alt="Shoe 4" />
       <h3>Reebok Flex</h3>
       <p>Kids' Shoes</p>
       <span class="price">₹2,199</span>
-      <button class="buynow">Add Cart</button>
+      <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
     </div>
 
-    <div class="product-card" data-id="5" onclick="viewProduct(105)">
+    <div class="product-card" data-id="5" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(105)">
       <img src="./images/products/shoes/shoe 5.webp" alt="Shoe 5" />
       <h3>Skechers GoWalk</h3>
       <p>Comfort Walking Shoes</p>
       <span class="price">₹3,799</span>
-      <button class="buynow">Add Cart</button>
+      <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
     </div>
 
-    <div class="product-card" data-id="6" onclick="viewProduct(106)">
+    <div class="product-card" data-id="6" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(106)">
       <img src="./images/products/shoes/shoe 6.jpg" alt="Shoe 6" />
       <h3>RedTap Shoe</h3>
       <p>Casual Shoes Wit Comfort And Reilable</p>
       <span class="price">₹2,999</span>
-      <button class="buynow">Add Cart</button>
+      <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
     </div>
   </div>
 
@@ -181,73 +181,73 @@
   <div>
     <h3 class="title">Best Slippers</h3>
     <div class="shoes">
-      <div class="product-card" data-id="7" onclick="viewProduct(107)">
+      <div class="product-card" data-id="7" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(107)">
         <img src="./images/products/slippers/men img 1.webp" alt="slipper1">
         <h3>Adidas</h3>
         <p>Casual Wit Comfort And Reilable</p>
         <span class="price">₹999</span>
-        <button class="buynow">Add Cart</button>
+        <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
       </div>
-      <div class="product-card" data-id="8" onclick="viewProduct(108)">
+      <div class="product-card" data-id="8" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(108)">
         <img src="./images/products/slippers/men img 2.webp" alt="slipper2">
         <h3>WoodLand</h3>
         <p>ComfortStep Triple-Strap Sandals</p>
         <span class="price">₹2,599</span>
-        <button class="buynow">Add Cart</button>
+        <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
       </div>
-      <div class="product-card" data-id="9" onclick="viewProduct(109)">
+      <div class="product-card" data-id="9" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(109)">
         <img src="./images/products/slippers/men img 4.webp" alt="slipper4">
         <h3>Bata</h3>
         <p>Casuals</p>
         <span class="price">₹1,299</span>
-        <button class="buynow">Add Cart</button>
+        <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
       </div>
 
-      <div class="product-card" data-id="10" onclick="viewProduct(110)">
+      <div class="product-card" data-id="10" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(110)">
         <img src="./images/products/slippers/men img 5.webp" alt="slipper5">
         <h3>Walkaroo</h3>
         <p>Casual Wit Comfort</p>
         <span class="price">₹999</span>
-        <button class="buynow">Add Cart</button>
+        <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
       </div>
 
-      <div class="product-card" data-id="11" onclick="viewProduct(111)">
+      <div class="product-card" data-id="11" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(111)">
         <img src="./images/products/slippers/men img 6.webp" alt="slipper6">
         <h3>Adidas</h3>
         <p>Casual Wit Comfort And Reilable</p>
         <span class="price">₹999</span>
-        <button class="buynow">Add Cart</button>
+        <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
       </div>
 
-      <div class="product-card" data-id="12" onclick="viewProduct(112)">
+      <div class="product-card" data-id="12" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(112)">
         <img src="./images/products/slippers/men img 7.webp" alt="slipper7">
         <h3>Walkaroo</h3>
         <p> Reilable</p>
         <span class="price">₹799</span>
-        <button class="buynow">Add Cart</button>
+        <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
       </div>
 
-      <div class="product-card" data-id="13" onclick="viewProduct(113)">
+      <div class="product-card" data-id="13" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(113)">
         <img src="./images/products/slippers/men img 9.webp" alt="slipper9">
         <h3>Adidas</h3>
         <p>Casual Wit Comfort And Reilable</p>
         <span class="price">₹1,399</span>
-        <button class="buynow">Add Cart</button>
+        <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
       </div>
-      <div class="product-card" data-id="14" onclick="viewProduct(114)">
+      <div class="product-card" data-id="14" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(114)">
         <img src="./images/products/slippers/men img 10.webp" alt="slipper10">
         <h3>Paragon</h3>
         <p> Reilable</p>
         <span class="price">₹699</span>
-        <button class="buynow">Add Cart</button>
+        <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
       </div>
 
-      <div class="product-card" data-id="15" onclick="viewProduct(115)">
+      <div class="product-card" data-id="15" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(115)">
         <img src="./images/products/slippers/men img 11.webp" alt="slipper11">
         <h3>Bata</h3>
         <p>DayLite Comfort Sandals</p>
         <span class="price">₹999</span>
-        <button class="buynow">Add Cart</button>
+        <button class="buynow" onclick="event.stopPropagation()">Add Cart</button>
       </div>
     </div>
   </div>

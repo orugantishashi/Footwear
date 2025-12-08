@@ -553,7 +553,11 @@ async function loadCategoryProducts(category) {
             const card = document.createElement('div');
             card.className = 'product-card'; // Changed to 'product-card' to match index.html styling
             card.setAttribute('data-id', product.id);
-            card.onclick = () => viewProduct(product.id);
+            card.onclick = (e) => {
+                if (e.target.tagName !== 'BUTTON') {
+                    viewProduct(product.id);
+                }
+            };
 
             const imgPath = `./images/${product.image}`;
 
