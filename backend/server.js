@@ -7,6 +7,10 @@ const fetch = require("node-fetch");
 
 // ==================== APP SETUP ====================
 const app = express();
+
+// Security: Hide Express framework information
+app.disable('x-powered-by');
+
 app.use(cors());
 app.use(express.json());
 
@@ -21,7 +25,7 @@ app.use((req, res, next) => {
 });
 
 // ==================== MONGO SETUP ====================
-const uri = process.env.MONGO_URI; 
+const uri = process.env.MONGO_URI;
 
 const client = new MongoClient(uri, {
     maxPoolSize: 10,

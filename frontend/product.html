@@ -13,7 +13,7 @@
 <body>
 
     <nav>
-        <a href="index.html" style="text-decoration: none;">
+        <a href="index.html" class="no-decoration">
             <h1>Foot Mart</h1>
         </a>
         <button class="hamburger" id="hamburger" aria-label="Menu">
@@ -77,14 +77,57 @@
             <br>
 
             <!-- Hidden product-card wrapper for cart functionality -->
-            <div id="product-card-wrapper" class="product-card" style="display: inline-block;">
-                <img style="display:none;">
-                <h3 style="display:none;"></h3>
-                <span class="price" style="display:none;"></span>
+            <div id="product-card-wrapper" class="inline-block">
+                <img class="hidden">
+                <h3 class="hidden"></h3>
+                <span class="price hidden"></span>
                 <button id="add-cart-btn" class="buynow">Add to Cart</button>
+                <button id="wishlist-btn" class="wishlist-btn" title="Add to Wishlist">
+                    &#x2764; <!-- Heart Entity -->
+                </button>
             </div>
         </div>
     </main>
+    <!-- Professional Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Foot Mart</h3>
+                <p class="footer-text">Your one-stop destination for premium footwear. Quality, comfort,
+                    and style in every step.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="men.html">Men's Collection</a></li>
+                    <li><a href="women.html">Women's Collection</a></li>
+                    <li><a href="kids.html">Kids' Collection</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Customer Care</h3>
+                <ul>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Returns & Exchange</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#">FB</a>
+                    <a href="#">IG</a>
+                    <a href="#">TW</a>
+                    <a href="#">YT</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Foot Mart. All Rights Reserved. | Designed for Comfort.</p>
+        </div>
+    </footer>
 
     <script src="product.js"></script>
     <script src="operation.js"></script>
@@ -137,7 +180,7 @@
             </span>
             <span>Cart</span>
         </a>
-        <a href="login.html" class="bottom-nav-item">
+        <a href="javascript:void(0)" id="mobile-account-trigger" class="bottom-nav-item">
             <span class="icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -147,6 +190,38 @@
             </span>
             <span>Account</span>
         </a>
+    </div>
+
+    <!-- Mobile Account Drawer -->
+    <div id="drawer-overlay" class="drawer-overlay"></div>
+    <div id="mobile-account-drawer" class="mobile-drawer">
+        <div class="drawer-header">
+            <h3>My Account</h3>
+            <button id="close-drawer" aria-label="Close">&times;</button>
+        </div>
+        <div class="drawer-profile">
+            <div class="avatar-circle">
+                <span>👤</span>
+            </div>
+            <div class="profile-info">
+                <h4 id="drawer-name">Guest</h4>
+                <p id="drawer-email">Not logged in</p>
+            </div>
+        </div>
+        <div class="drawer-menu">
+            <button id="drawer-login-btn" class="drawer-item hidden">Login / Register</button>
+            <div id="drawer-auth-actions">
+                <button id="drawer-change-pass" class="drawer-item">
+                    <span>🔒</span> Change Password
+                </button>
+                <button id="drawer-help" class="drawer-item">
+                    <span>❓</span> Help & Support
+                </button>
+                <button id="drawer-logout" class="drawer-item logout-btn">
+                    <span>🚪</span> Logout
+                </button>
+            </div>
+        </div>
     </div>
 </body>
 

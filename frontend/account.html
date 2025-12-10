@@ -2,13 +2,12 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Women's Footwear - Foot Mart</title>
-    <meta name="description"
-        content="Shop the latest women's footwear collection at Foot Mart. Heels, sneakers, sandals, and more.">
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="hamburger.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Foot Mart</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="hamburger.css">
+    <!-- Reusing minimal styles for the account layout or adding new ones in style.css -->
 </head>
 
 <body>
@@ -25,7 +24,7 @@
             <ul id="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="men.html">Men</a></li>
-                <li><a href="women.html" class="active">Women</a></li>
+                <li><a href="women.html">Women</a></li>
                 <li><a href="kids.html">Kids</a></li>
             </ul>
         </div>
@@ -50,10 +49,64 @@
         </div>
     </nav>
 
+    <div class="account-container">
+        <!-- Logged In View -->
+        <div id="account-logged-in" class="hidden">
+            <div class="account-header-card">
+                <div class="account-avatar">
+                    👤
+                </div>
+                <div class="account-info">
+                    <h2 id="page-profile-name">User Name</h2>
+                    <p id="page-profile-email">email@example.com</p>
+                </div>
+            </div>
 
-    <h3 id="section-title" class="title">Men's Collection</h3>
-    <div id="product-grid" class="cards">
-        <!-- Products will be loaded here by JS -->
+            <div class="account-actions">
+                <button class="action-btn" onclick="window.location.href='login.html#change-password'">
+                    <div class="action-icon">
+                        <span>🔒</span> Change Password
+                    </div>
+                    <span>›</span>
+                </button>
+
+                <button class="action-btn" onclick="alert('Need help? Contact support@footmart.com')">
+                    <div class="action-icon">
+                        <span>❓</span> Help & Support
+                    </div>
+                    <span>›</span>
+                </button>
+
+                <button class="action-btn logout-action" id="page-logout-btn">
+                    <div class="action-icon">
+                        <span>🚪</span> Logout
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Not Logged In View -->
+        <div id="account-logged-out">
+            <div class="account-header-card">
+                <div class="account-avatar">
+                    ?
+                </div>
+                <div class="account-info">
+                    <h2>Welcome Guest</h2>
+                    <p>Login to manage your orders and profile.</p>
+                    <a href="login.html" class="login-btn-large">Login / Register</a>
+                </div>
+            </div>
+            <div class="account-actions">
+
+                <button class="action-btn" onclick="alert('Need help? Contact support@footmart.com')">
+                    <div class="action-icon">
+                        <span>❓</span> Help & Support
+                    </div>
+                    <span>›</span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Professional Footer -->
@@ -97,17 +150,6 @@
         </div>
     </footer>
 
-    <script src="products.js"></script>
-    <script src="operation.js"></script>
-    <script>
-        // Automatically load men's products when this page loads
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof loadCategoryProducts === 'function') {
-                loadCategoryProducts('mens');
-            }
-        });
-    </script>
-
     <!-- Mobile Bottom Navigation -->
     <div class="bottom-nav">
         <a href="index.html" class="bottom-nav-item">
@@ -131,7 +173,7 @@
             </span>
             <span>Cart</span>
         </a>
-        <a href="javascript:void(0)" id="mobile-account-trigger" class="bottom-nav-item">
+        <a href="account.html" class="bottom-nav-item active">
             <span class="icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -143,37 +185,31 @@
         </a>
     </div>
 
-    <!-- Mobile Account Drawer -->
-    <div id="drawer-overlay" class="drawer-overlay"></div>
-    <div id="mobile-account-drawer" class="mobile-drawer">
-        <div class="drawer-header">
-            <h3>My Account</h3>
-            <button id="close-drawer" aria-label="Close">&times;</button>
-        </div>
-        <div class="drawer-profile">
-            <div class="avatar-circle">
-                <span>👤</span>
-            </div>
-            <div class="profile-info">
-                <h4 id="drawer-name">Guest</h4>
-                <p id="drawer-email">Not logged in</p>
-            </div>
-        </div>
-        <div class="drawer-menu">
-            <button id="drawer-login-btn" class="drawer-item hidden">Login / Register</button>
-            <div id="drawer-auth-actions">
-                <button id="drawer-change-pass" class="drawer-item">
-                    <span>🔒</span> Change Password
-                </button>
-                <button id="drawer-help" class="drawer-item">
-                    <span>❓</span> Help & Support
-                </button>
-                <button id="drawer-logout" class="drawer-item logout-btn">
-                    <span>🚪</span> Logout
-                </button>
-            </div>
-        </div>
-    </div>
+    <script src="operation.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const userJson = localStorage.getItem("user");
+            const loggedInView = document.getElementById("account-logged-in");
+            const loggedOutView = document.getElementById("account-logged-out");
+
+            if (userJson) {
+                const user = JSON.parse(userJson);
+                document.getElementById("page-profile-name").textContent = user.name || "User";
+                document.getElementById("page-profile-email").textContent = user.email || "";
+
+                loggedInView.classList.remove("hidden");
+                loggedOutView.classList.add("hidden");
+            } else {
+                loggedInView.classList.add("hidden");
+                loggedOutView.classList.remove("hidden");
+            }
+
+            // Logout Handler specific to this page button
+            document.getElementById("page-logout-btn").addEventListener("click", () => {
+                if (typeof logout === 'function') logout();
+            });
+        });
+    </script>
 </body>
 
 </html>

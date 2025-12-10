@@ -65,37 +65,44 @@ function updateCartCount(count) {
     }
     localStorage.setItem("cartCount", String(count));
 }
+// Alias for consistency with new cart logic
+const updateCartCountUI = updateCartCount;
 
 // Function to sync cart count from server (call this on page load)
 async function syncCartCountFromServer() {
+    let total = 0;
+
+    // 1. Calculate Guest Cart items
+    try {
+        const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+        if (Array.isArray(guestCart)) {
+            total += guestCart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+        }
+    } catch (e) {
+        console.warn("Guest cart parse error", e);
+    }
+
     const userJson = localStorage.getItem("user");
     if (!userJson) {
-        // Only reset to 0 if user is not logged in
-        const cartCountElement = document.getElementById("cart-count");
-        if (cartCountElement && cartCountElement.textContent === "0") {
-            // Already 0, don't update
-            return;
-        }
-        updateCartCount(0);
+        // Only guest items
+        updateCartCount(total);
         return;
     }
 
+    // 2. Add Server Cart items (if logged in)
     try {
         const user = JSON.parse(userJson);
         const response = await fetch(`https://footwear-y0zi.onrender.com/cart?email=${encodeURIComponent(user.email)}`);
         const data = await response.json();
         if (response.ok && Array.isArray(data.items)) {
-            const total = data.items.reduce((s, it) => s + (Number(it.quantity) || 0), 0);
-            updateCartCount(total);
-            console.log("Cart count synced from server:", total);
-        } else {
-            console.warn("Cart sync failed - invalid response:", data);
-            // Keep existing count on invalid response
+            const serverTotal = data.items.reduce((s, it) => s + (Number(it.quantity) || 0), 0);
+            total += serverTotal;
         }
     } catch (err) {
         console.error("Cart sync error:", err);
-        // Keep existing count on error - don't reset to 0
     }
+
+    updateCartCount(total);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -121,36 +128,81 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function addToCartHandler(button) {
         const userJson = localStorage.getItem("user");
-        if (!userJson) {
-            showNotification("Please login to add items to your cart", "error");
-            setTimeout(() => window.location.href = "login.html", 1500);
-            return;
+        let userEmail = null;
+        if (userJson) {
+            userEmail = JSON.parse(userJson).email;
         }
 
-        const user = JSON.parse(userJson);
-        const card = button.closest(".product-card");
+        const card = button.closest(".product-card") || button.closest("#product-card-wrapper"); // Support product page
         if (!card) {
             showNotification("Unable to find product details", "error");
             return;
         }
 
-        const id = card.getAttribute("data-id");
-        const name = card.querySelector("h3")?.textContent.trim() || "";
-        const priceText = card.querySelector(".price")?.textContent.trim() || "₹0";
+        // Handle product page specific details (fallback lookup)
+        let id = card.getAttribute("data-id");
+        let name = card.querySelector("h3")?.textContent.trim();
+        let priceText = card.querySelector(".price")?.textContent.trim();
+        let img = card.querySelector("img")?.getAttribute("src");
+
+        // If on product page, these might be hidden or elsewhere
+        if (!id && window.location.pathname.includes("product.html")) {
+            const params = new URLSearchParams(window.location.search);
+            id = params.get("id");
+            name = document.getElementById("product-name")?.textContent.trim();
+            priceText = document.getElementById("product-price")?.textContent.trim();
+            img = document.getElementById("product-img")?.getAttribute("src");
+        }
+
+        if (!name) name = "";
+        if (!priceText) priceText = "₹0";
         const numericPrice = parseInt(priceText.replace(/[^0-9]/g, ""), 10) || 0;
-        const img = card.querySelector("img")?.getAttribute("src") || "";
 
         // Disable button during request
         const originalText = button.textContent;
         button.disabled = true;
         button.textContent = "Adding...";
 
+        // GUEST USER LOGIC (LocalStorage)
+        if (!userEmail) {
+            try {
+                let guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+                const existingItemIndex = guestCart.findIndex(item => String(item.id) === String(id));
+
+                if (existingItemIndex > -1) {
+                    guestCart[existingItemIndex].quantity += 1;
+                } else {
+                    guestCart.push({
+                        id: String(id),
+                        name,
+                        price: numericPrice,
+                        img,
+                        quantity: 1
+                    });
+                }
+                localStorage.setItem("guestCart", JSON.stringify(guestCart));
+
+                // Update basic UI counter (approximate)
+                const totalItems = guestCart.reduce((sum, item) => sum + item.quantity, 0);
+                updateCartCountUI(totalItems);
+
+                showNotification("Added to Guest Cart!", "success");
+            } catch (err) {
+                showNotification("Failed to add to guest cart", "error");
+            } finally {
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+            return;
+        }
+
+        // LOGGED IN USER LOGIC (Backend Request)
         try {
             const response = await fetch("https://footwear-y0zi.onrender.com/add-to-cart", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    email: user.email,
+                    email: userEmail,
                     id: String(id),
                     name,
                     price: numericPrice,
@@ -159,48 +211,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 }),
             });
 
-            let data;
-            try { data = await response.json(); } catch (_) { data = {}; }
+            const result = await response.json();
 
-            if (!response.ok) {
-                console.error("Add to cart failed:", response.status, data);
-                showNotification(data.message || data.error || "Failed to add to cart", "error");
-                button.disabled = false;
-                button.textContent = originalText;
-                return;
-            }
-
-            // Fetch actual cart count from server after adding
-            try {
-                const cartResponse = await fetch(`https://footwear-y0zi.onrender.com/cart?email=${encodeURIComponent(user.email)}`);
-                const cartData = await cartResponse.json();
-                if (cartResponse.ok && Array.isArray(cartData.items)) {
-                    const actualCount = cartData.items.reduce((sum, it) => sum + (Number(it.quantity) || 0), 0);
-                    updateCartCount(actualCount);
+            if (response.ok) {
+                // Determine new cart count
+                if (result.cart && Array.isArray(result.cart)) {
+                    const actualCount = result.cart.reduce((sum, it) => sum + (Number(it.quantity) || 0), 0);
+                    updateCartCountUI(actualCount);
                 } else {
-                    // Fallback: increment if we can't fetch
-                    updateCartCount(cartCount + 1);
+                    await syncCartCountFromServer();
                 }
-            } catch (fetchErr) {
-                // Fallback: increment if fetch fails
-                updateCartCount(cartCount + 1);
+                showNotification("Added to Cart!", "success");
+
+                // Reload cart if on cart page
+                if (window.location.pathname.includes('cart.html')) {
+                    setTimeout(() => window.location.reload(), 500);
+                }
+            } else {
+                throw new Error(result.error || "Server responded with an error");
             }
-
-            showNotification("Product added to cart!", "success");
-
-            // Reload cart if on cart page
-            if (typeof window.loadCart === 'function') {
-                window.loadCart();
-            } else if (window.location.pathname.includes('cart.html') || window.location.href.includes('cart.html')) {
-                // If on cart page but loadCart not available, reload the page
-                setTimeout(() => window.location.reload(), 500);
-            }
-
-            button.disabled = false;
-            button.textContent = originalText;
         } catch (err) {
             console.error("Add to cart error:", err);
-            showNotification("Could not add to cart. Please try again.", "error");
+            showNotification(err.message || "Failed to add to cart", "error");
+        } finally {
             button.disabled = false;
             button.textContent = originalText;
         }
@@ -499,9 +532,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     profileBtn?.addEventListener("click", (e) => {
         e.stopPropagation();
-        const expanded = profileBtn.getAttribute("aria-expanded") === "true";
-        profileBtn.setAttribute("aria-expanded", String(!expanded));
-        profileMenu?.classList.toggle("hidden");
+        // Redirect to account page instead of toggling dropdown
+        window.location.href = "account.html";
     });
 
     logoutBtn?.addEventListener("click", logout);
@@ -699,6 +731,104 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+
 function goBackFromChangePass() {
     window.location.href = "index.html";
 }
+
+// ------------------ MOBILE ACCOUNT DRAWER ------------------
+document.addEventListener("DOMContentLoaded", () => {
+    const mobileAccountTrigger = document.getElementById("mobile-account-trigger");
+    const drawer = document.getElementById("mobile-account-drawer");
+    const overlay = document.getElementById("drawer-overlay");
+    const closeDrawerBtn = document.getElementById("close-drawer");
+
+    const drawerName = document.getElementById("drawer-name");
+    const drawerEmail = document.getElementById("drawer-email");
+    const drawerLoginBtn = document.getElementById("drawer-login-btn");
+    const drawerAuthActions = document.getElementById("drawer-auth-actions");
+
+    // Change password button inside drawer
+    const drawerChangePassBtn = document.getElementById("drawer-change-pass");
+    // Help button
+    const drawerHelpBtn = document.getElementById("drawer-help");
+    // Logout button
+    const drawerLogoutBtn = document.getElementById("drawer-logout");
+
+    function updateDrawerUI() {
+        const userJson = localStorage.getItem("user");
+        if (userJson) {
+            const user = JSON.parse(userJson);
+            if (drawerName) drawerName.textContent = user.name || "User";
+            if (drawerEmail) drawerEmail.textContent = user.email || "";
+
+            if (drawerLoginBtn) drawerLoginBtn.classList.add("hidden");
+            if (drawerAuthActions) drawerAuthActions.classList.remove("hidden");
+        } else {
+            if (drawerName) drawerName.textContent = "Guest";
+            if (drawerEmail) drawerEmail.textContent = "Please login to manage account";
+
+            if (drawerLoginBtn) drawerLoginBtn.classList.remove("hidden");
+            if (drawerAuthActions) drawerAuthActions.classList.add("hidden");
+        }
+    }
+
+    function openDrawer() {
+        if (!drawer || !overlay) return;
+        updateDrawerUI();
+        drawer.classList.add("active");
+        overlay.classList.add("active");
+        document.body.style.overflow = "hidden"; // Prevent background scrolling
+    }
+
+    function closeDrawer() {
+        if (!drawer || !overlay) return;
+        drawer.classList.remove("active");
+        overlay.classList.remove("active");
+        document.body.style.overflow = "";
+    }
+
+    if (mobileAccountTrigger) {
+        mobileAccountTrigger.addEventListener("click", (e) => {
+            e.preventDefault();
+            openDrawer();
+        });
+    }
+
+    if (closeDrawerBtn) closeDrawerBtn.addEventListener("click", closeDrawer);
+    if (overlay) overlay.addEventListener("click", closeDrawer);
+
+    // Actions
+    if (drawerLoginBtn) {
+        drawerLoginBtn.addEventListener("click", () => {
+            window.location.href = "login.html";
+        });
+    }
+
+    if (drawerChangePassBtn) {
+        drawerChangePassBtn.addEventListener("click", () => {
+            window.location.href = "login.html#change-password";
+        });
+    }
+
+    if (drawerHelpBtn) {
+        drawerHelpBtn.addEventListener("click", () => {
+            alert("For support, please email us at support@footmart.com or call 1-800-FOOTMART.");
+        });
+    }
+
+    if (drawerLogoutBtn) {
+        drawerLogoutBtn.addEventListener("click", (e) => {
+            // Reuse existing logout function
+            e.preventDefault();
+            if (typeof logout === 'function') {
+                logout();
+            } else {
+                // Fallback if logout function isn't globally available or fails
+                localStorage.removeItem("user");
+                localStorage.removeItem("cartCount");
+                window.location.reload();
+            }
+        });
+    }
+});

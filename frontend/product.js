@@ -85,3 +85,61 @@ document.querySelectorAll(".size-btn").forEach(btn => {
         btn.classList.add("selected");
     });
 });
+
+// ------------------ WISHLIST FUNCTIONALITY ------------------
+document.addEventListener("DOMContentLoaded", () => {
+    // Only run on product page
+    const wishlistBtn = document.getElementById("wishlist-btn");
+    if (!wishlistBtn) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("id");
+
+    if (!productId) return;
+
+    // Check if in wishlist
+    function checkWishlist() {
+        const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+        const exists = wishlist.some(item => String(item.id) === String(productId));
+        if (exists) {
+            wishlistBtn.classList.add("active");
+            wishlistBtn.innerHTML = "&#x2764;"; // Filled Heart (using same entity but styling toggles color)
+        } else {
+            wishlistBtn.classList.remove("active");
+            wishlistBtn.innerHTML = "&#x2764;";
+        }
+    }
+
+    // Toggle logic
+    wishlistBtn.addEventListener("click", async () => {
+        // Collect product details from DOM
+        const name = document.getElementById("product-name").textContent;
+        const price = document.getElementById("product-price").textContent;
+        const img = document.getElementById("product-img").src;
+
+        let wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+        const index = wishlist.findIndex(item => String(item.id) === String(productId));
+
+        if (index > -1) {
+            // Remove
+            wishlist.splice(index, 1);
+            showNotification ? showNotification("Removed from Wishlist", "error") : alert("Removed from Wishlist");
+            wishlistBtn.classList.remove("active");
+        } else {
+            // Add
+            wishlist.push({
+                id: productId,
+                name: name,
+                price: price,
+                img: img
+            });
+            showNotification ? showNotification("Added to Wishlist", "success") : alert("Added to Wishlist");
+            wishlistBtn.classList.add("active");
+        }
+
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    });
+
+    // Check status on load (delay slightly to ensure product loaded? Actually resolveProduct runs independently, so we just check ID match)
+    checkWishlist();
+});

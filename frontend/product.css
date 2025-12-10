@@ -3,7 +3,7 @@
 /* Navigation styles are now inherited from style.css */
 
 body {
-    font-family: 'Times New Roman', LTimes, serif;
+    font-family: 'Poppins', sans-serif;
     background-color: #f8f8f8;
     color: #222;
 }
@@ -110,6 +110,8 @@ body {
     .product-media {
         width: 100%;
         flex: 0 0 auto;
+        margin-top: 20px;
+        /* Separate image from buttons */
     }
 }
 

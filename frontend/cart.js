@@ -66,47 +66,60 @@ window.loadCart = async function loadCart() {
     const totalEl = document.getElementById('cart-total-display');
     const summaryEl = document.getElementById('order-summary');
 
+    let items = [];
+
+    // 1. Fetch Items (Guest or Logged In)
     if (!userJson) {
-        console.log('No user found in localStorage');
+        // GUEST USER
+        try {
+            items = JSON.parse(localStorage.getItem("guestCart") || "[]");
+        } catch (e) {
+            items = [];
+        }
+    } else {
+        // LOGGED IN USER
+        const user = JSON.parse(userJson);
+        try {
+            const response = await fetch(`https://footwear-y0zi.onrender.com/cart?email=${encodeURIComponent(user.email)}`);
+            if (response.ok) {
+                const data = await response.json();
+                items = Array.isArray(data.items) ? data.items : [];
+            } else {
+                throw new Error("Failed to fetch cart");
+            }
+        } catch (err) {
+            console.error('Load cart error (Server):', err);
+            // Fallback to empty if server fails? Or show error?
+            // For now, let's just proceed with empty list to avoid breaking UI completely
+            showNotification('Failed to sync cart from server', 'error');
+            items = [];
+        }
+    }
+
+    // 2. Render Check
+    if (items.length === 0) {
+        if (emptyEl) emptyEl.classList.remove('hidden');
         if (emptyEl) emptyEl.style.display = 'block';
-        if (listEl) listEl.innerHTML = '';
+        if (listEl) {
+            listEl.innerHTML = '';
+            listEl.style.display = 'none';
+        }
         if (summaryEl) summaryEl.style.display = 'none';
+        updateCartCount(0);
         return;
     }
 
-    const user = JSON.parse(userJson);
+    // 3. Render Items
+    if (emptyEl) emptyEl.classList.add('hidden');
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (listEl) listEl.style.display = 'block';
+    if (summaryEl) summaryEl.style.display = 'block';
 
-    try {
-        const response = await fetch(`https://footwear-y0zi.onrender.com/cart?email=${encodeURIComponent(user.email)}`);
+    const html = items.map((item) => {
+        const price = Number(item.price) || 0;
+        const qty = Number(item.quantity) || 1;
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `Failed to load cart (${response.status})`);
-        }
-
-        const data = await response.json();
-        const items = Array.isArray(data.items) ? data.items : [];
-
-        if (items.length === 0) {
-            if (emptyEl) emptyEl.style.display = 'block';
-            if (listEl) {
-                listEl.innerHTML = '';
-                listEl.style.display = 'none';
-            }
-            if (summaryEl) summaryEl.style.display = 'none';
-            updateCartCount(0);
-            return;
-        }
-
-        if (emptyEl) emptyEl.style.display = 'none';
-        if (listEl) listEl.style.display = 'block';
-        if (summaryEl) summaryEl.style.display = 'block';
-
-        const html = items.map((item) => {
-            const price = Number(item.price) || 0;
-            const qty = Number(item.quantity) || 1;
-
-            return `
+        return `
             <div class="cart-item" data-item-id="${item.id}">
                 <img src="${item.img || ''}" alt="${item.name || 'Product'}" onerror="this.src='./images/banners/orginal/empty-cart.png'" />
                 <div class="item-details">
@@ -123,27 +136,19 @@ window.loadCart = async function loadCart() {
                     <button class="remove-btn" data-id="${item.id}">Remove</button>
                 </div>
             </div>`;
-        }).join('');
+    }).join('');
 
-        if (listEl) listEl.innerHTML = html;
+    if (listEl) listEl.innerHTML = html;
 
-        const grandTotal = items.reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 1), 0);
+    // 4. Calculate Totals
+    const grandTotal = items.reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 1), 0);
 
-        if (subtotalEl) subtotalEl.textContent = `₹${grandTotal}`;
-        if (totalEl) totalEl.textContent = `₹${grandTotal}`;
+    if (subtotalEl) subtotalEl.textContent = `₹${grandTotal}`;
+    if (totalEl) totalEl.textContent = `₹${grandTotal}`;
 
-        // Update cart count cache
-        const totalCount = items.reduce((sum, it) => sum + (Number(it.quantity) || 1), 0);
-        updateCartCount(totalCount);
-
-    } catch (err) {
-        console.error('Load cart error:', err);
-        showNotification('Failed to load cart: ' + err.message, 'error');
-        if (emptyEl) emptyEl.style.display = 'block';
-        if (listEl) listEl.style.display = 'none';
-        if (summaryEl) summaryEl.style.display = 'none';
-        updateCartCount(0);
-    }
+    // Update global cart count
+    const totalCount = items.reduce((sum, it) => sum + (Number(it.quantity) || 1), 0);
+    updateCartCount(totalCount);
 }
 
 // Event delegation for qty controls
@@ -183,16 +188,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function handleCartAction(id, action, targetElement) {
     const userJson = localStorage.getItem('user');
-    if (!userJson) {
-        showNotification('Please login to update cart', 'error');
-        return;
-    }
 
     // Disable button to prevent double clicks
     targetElement.disabled = true;
     const originalText = targetElement.textContent;
     if (action !== 'remove') targetElement.textContent = '...';
 
+    // --- GUEST USER ACTION ---
+    if (!userJson) {
+        try {
+            let guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+            const index = guestCart.findIndex(item => String(item.id) === String(id));
+
+            if (index > -1) {
+                if (action === 'remove') {
+                    guestCart.splice(index, 1);
+                    showNotification('Item removed', 'success');
+                } else if (action === 'increase') {
+                    guestCart[index].quantity = (guestCart[index].quantity || 1) + 1;
+                } else if (action === 'decrease') {
+                    if (guestCart[index].quantity > 1) {
+                        guestCart[index].quantity -= 1;
+                    } else {
+                        // Optional: remove if quantity goes below 1? Usually warn or remove.
+                        // For now, let's keep min 1
+                    }
+                }
+                localStorage.setItem("guestCart", JSON.stringify(guestCart));
+                await loadCart(); // Re-render
+            }
+        } catch (e) {
+            console.error("Guest cart update error", e);
+        } finally {
+            targetElement.disabled = false;
+            if (action !== 'remove') targetElement.textContent = originalText;
+        }
+        return;
+    }
+
+    // --- LOGGED IN USER ACTION ---
     try {
         const email = JSON.parse(userJson).email;
         let url = 'https://footwear-y0zi.onrender.com/cart/update';
