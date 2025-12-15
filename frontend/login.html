@@ -83,19 +83,28 @@
             </p>
         </div>
     </div>
-   
+
 
     <script src="operation.js"></script>
     <script>
         function showRegister() {
             document.getElementById('login-box').classList.add('hidden');
             document.getElementById('register-box').classList.remove('hidden');
+            document.getElementById('change-pass-box')?.classList.add('hidden');
         }
 
         function showLogin() {
             document.getElementById('register-box').classList.add('hidden');
             document.getElementById('login-box').classList.remove('hidden');
+            document.getElementById('change-pass-box')?.classList.add('hidden');
         }
+
+        // Check URL hash on load
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.location.hash === '#register') {
+                showRegister();
+            }
+        });
     </script>
 </body>
 

@@ -431,18 +431,22 @@ function viewProduct(id) {
 // ------------------ PROFILE & NAV UI ------------------
 function updateNavUI() {
     const userJson = localStorage.getItem("user");
-    const loginLink = document.getElementById("login-link");
+    const authButtons = document.getElementById("auth-buttons");
+    const loginLink = document.getElementById("login-link"); // Keep for backward compatibility during migration
     const profile = document.getElementById("profile");
     const profileName = document.getElementById("profile-name");
 
-    if (userJson) {
-        const user = JSON.parse(userJson);
-        loginLink?.classList.add("hidden");
-        profile?.classList.remove("hidden");
-        if (profileName) profileName.textContent = user.name || user.email;
-    } else {
-        loginLink?.classList.remove("hidden");
-        profile?.classList.add("hidden");
+    const isLoggedIn = !!userJson;
+    const user = isLoggedIn ? JSON.parse(userJson) : null;
+
+    // Toggle Visibility
+    if (authButtons) authButtons.classList.toggle("hidden", isLoggedIn);
+    if (loginLink) loginLink.classList.toggle("hidden", isLoggedIn);
+    if (profile) profile.classList.toggle("hidden", !isLoggedIn);
+
+    // Update Profile Name
+    if (isLoggedIn && profileName) {
+        profileName.textContent = user.name || user.email;
     }
 }
 

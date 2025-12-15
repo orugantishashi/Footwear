@@ -1,13 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    /* Ensure EVERYTHING uses this font */
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
     background-color: #f8f8f8;
     color: #222;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 /* ... existing styles ... */
@@ -55,6 +61,11 @@ body {
     padding: 10px 20px;
     margin: 5px;
     cursor: pointer;
+    font-weight: 700;
+    /* Bold */
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 body.dark-mode {
@@ -180,6 +191,45 @@ nav li a {
     background: #f0f0f0;
 }
 
+/* Auth Buttons */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-left: 10px;
+}
+
+.sign-in-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.sign-in-link:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+.sign-up-btn {
+    background-color: #111;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity 0.3s, background-color 0.3s;
+}
+
+.sign-up-btn:hover {
+    background-color: #000;
+    opacity: 0.9;
+}
+
 #profile {
     position: relative;
 }
@@ -231,34 +281,37 @@ nav li a {
 }
 
 /* ---------- Banners ---------- */
+/* ---------- Banners ---------- */
 .banner {
-    width: 100%;
+    width: 96%;
+    max-width: 1400px;
     height: 60vh;
     /* Fixed height for desktop */
+    margin: 20px auto;
+    border-radius: 20px;
     overflow: hidden;
     background: transparent;
     display: block;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    /* Subtle shadow for depth */
 }
 
 .banner img {
     width: 100%;
     height: 100%;
-    /* Fill the 60vh container */
     object-fit: cover;
-    /* Crop to fill without distortion */
     object-position: center;
-    /* Focus on center */
-    border-radius: 0;
+    border-radius: 20px;
     display: block;
 }
 
-
-
 .slipperbanners {
-    width: 100%;
+    width: 96%;
+    max-width: 1400px;
     height: auto;
     overflow: hidden;
-    margin-top: 20px;
+    margin: 20px auto;
+    border-radius: 20px;
 }
 
 .slipperbanners img {
@@ -266,6 +319,7 @@ nav li a {
     height: auto;
     object-fit: cover;
     display: block;
+    border-radius: 20px;
 }
 
 /* ---------- Cards Section ---------- */
@@ -450,6 +504,8 @@ footer {
     color: #fff;
     padding-top: 40px;
     font-family: 'Poppins', sans-serif;
+    margin-top: auto;
+    /* Pushes footer to the bottom */
 }
 
 .newsletter {
@@ -591,10 +647,7 @@ footer {
 
 @media (max-width: 768px) {
 
-
-
     /* --- Hide Top Nav Elements on Mobile --- */
-    #cart,
     #profile,
     .toggle,
     .nav-search {
@@ -602,69 +655,79 @@ footer {
     }
 
     /* --- Mobile Navigation Bar Layout --- */
-    /* --- Mobile Navigation Bar Layout --- */
     nav {
         display: flex;
-        /* Keep flex for safety but use absolute for alignment */
-        justify-content: center;
-        /* Center stuff generally */
+        justify-content: space-between;
         align-items: center;
-        padding: 5px 10px;
+        padding: 10px 15px;
         position: relative;
         min-height: 60px;
-        /* Ensure enough height */
+        background-color: #fff;
     }
 
     nav h1 {
-        font-size: 1.2rem;
+        position: static;
+        transform: none;
         margin: 0;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        /* Perfectly center */
-        white-space: nowrap;
-        z-index: 10;
-        width: auto;
+        font-size: 1.4rem;
+        order: 1;
+        margin-right: auto;
     }
 
-    /* Ensure Login Button is visible and styled for mobile */
+    /* Hide the old login-link if it exists */
     #login-link {
         display: none !important;
-        /* Visible by default on mobile if not logged in */
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        padding: 6px 10px;
-        font-size: 0.75rem;
-        background-color: transparent;
-        color: #333;
-        border: 1px solid #333;
-        border-radius: 4px;
+    }
+
+    /* Center content hidden usually */
+    .nav-content {
+        /* This is usually handled by hamburger.css to be hidden or fixed */
+    }
+
+    /* Right Side Container */
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        order: 2;
+        /* Push to right */
+    }
+
+    /* Mobile Auth Buttons */
+    .auth-buttons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        order: 3;
+        margin-left: 5px;
+    }
+
+    .sign-in-link {
+        font-size: 0.85rem;
         white-space: nowrap;
-        max-width: 90px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        z-index: 20;
+    }
+
+    .sign-up-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        white-space: nowrap;
     }
 
     /* Hamburger on the Right */
     .hamburger {
         display: block;
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%) scale(0.8);
-        order: initial;
-        margin: 0;
-        z-index: 20;
+        position: static;
+        transform: none;
+        margin-left: 10px;
+        order: 4;
     }
 
     /* --- Banner --- */
     .banner {
         height: auto;
-        width: 100%;
+        width: 94%;
+        margin: 10px auto;
+        border-radius: 12px;
         display: block;
     }
 
@@ -672,14 +735,15 @@ footer {
         width: 100%;
         height: auto;
         object-fit: contain;
-        /* Ensures the whole banner image is visible */
         display: block;
+        border-radius: 12px;
     }
 
     .slipperbanners {
         height: auto;
-        width: 100%;
-        margin-top: 20px;
+        width: 94%;
+        margin: 15px auto;
+        border-radius: 12px;
     }
 
     .slipperbanners img {
@@ -707,7 +771,6 @@ footer {
 
     .product-card {
         flex: 0 0 240px;
-        /* Slightly smaller cards */
     }
 
     /* --- Newsletter --- */

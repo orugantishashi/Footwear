@@ -29,12 +29,14 @@ body {
 
 /* Product page layout: details right, image left */
 .product-wrap {
-    margin: 30px auto;
+    margin: 30px 30px;
+    /* Align left with nav */
     display: flex;
     align-items: flex-start;
-    gap: 24px;
-    padding: 20px;
+    gap: 40px;
+    padding: 20px 0;
     box-sizing: border-box;
+    max-width: 1400px;
 }
 
 .product-info {

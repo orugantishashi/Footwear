@@ -37,11 +37,6 @@
 <body>
   <nav>
     <h1>Foot Mart</h1>
-    <button class="hamburger" id="hamburger" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
     <div class="nav-content" id="nav-content">
       <ul id="nav-links">
         <li><a href="index.html">Home</a></li>
@@ -54,12 +49,12 @@
       <input type="search" id="nav-search-input" placeholder="Search Nike shoes" aria-label="Search Nike shoes">
       <button type="submit">Search</button>
     </form>
-    <div id="cart" class="cart" onclick="window.location.href='cart.html'">
-      🛒 Cart (<span id="cart-count">0</span>)
-    </div>
 
     <!---- Login Page-->
-    <button id="login-link" class="login" onclick="window.location.href='login.html'">Login / Register</button>
+    <div id="auth-buttons" class="auth-buttons">
+      <a href="login.html" class="sign-in-link">Sign In</a>
+      <button class="sign-up-btn" onclick="window.location.href='login.html#register'">Sign Up</button>
+    </div>
 
     <div id="profile" class="hidden">
       <button id="profile-btn" aria-haspopup="true" aria-expanded="false">👤</button>
