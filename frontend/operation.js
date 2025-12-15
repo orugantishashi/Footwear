@@ -244,51 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Search functionality removed as per user request (Nike feed removal)
 
 
-// ------------------ DARK MODE TOGGLE ------------------
-// ------------------ DARK MODE TOGGLE ------------------
-document.addEventListener("DOMContentLoaded", () => {
-    const toggle = document.querySelector(".toggle");
-    const mobileToggle = document.getElementById("mobile-dark-mode-toggle");
 
-    // 1. Check for saved dark mode preference on load
-    const savedDarkMode = localStorage.getItem("darkMode");
-    if (savedDarkMode === "enabled") {
-        document.body.classList.add("dark-mode");
-    }
-
-    // 2. Function to update button text
-    function updateToggleText() {
-        const isDark = document.body.classList.contains("dark-mode");
-        if (toggle) toggle.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
-        if (mobileToggle) mobileToggle.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
-    }
-
-    // Initial text update based on loaded state
-    updateToggleText();
-
-    // 3. Toggle Function
-    function toggleDarkMode(e) {
-        if (e) e.preventDefault();
-        document.body.classList.toggle("dark-mode");
-
-        // Save preference to localStorage
-        if (document.body.classList.contains("dark-mode")) {
-            localStorage.setItem("darkMode", "enabled");
-        } else {
-            localStorage.setItem("darkMode", "disabled");
-        }
-
-        updateToggleText();
-    }
-
-    if (toggle) {
-        toggle.addEventListener("click", toggleDarkMode);
-    }
-
-    if (mobileToggle) {
-        mobileToggle.addEventListener("click", toggleDarkMode);
-    }
-});
 
 // ------------------ REGISTER FUNCTION ------------------
 async function register() {
