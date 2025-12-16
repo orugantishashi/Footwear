@@ -1,5 +1,6 @@
 // ==================== IMPORTS ====================
 const express = require("express");
+require("dotenv").config();
 const { MongoClient } = require("mongodb");
 const cors = require("cors");
 const path = require("path");
@@ -11,7 +12,7 @@ const app = express();
 // Security: Hide Express framework information
 app.disable('x-powered-by');
 
-app.use(cors());
+app.use(cors({ origin: "*", methods: "GET,POST,PUT,DELETE", allowedHeaders: "Content-Type" }));
 app.use(express.json());
 
 // Serve frontend files (go up to html-css-project2 directory)

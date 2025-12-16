@@ -1,3 +1,5 @@
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:" ? "http://localhost:3000" : "https://footwear-y0zi.onrender.com";
+
 // Import notification function from operation.js (or define it here if needed)
 function showNotification(message, type = 'success') {
     const existing = document.getElementById('notification');
@@ -80,7 +82,7 @@ window.loadCart = async function loadCart() {
         // LOGGED IN USER
         const user = JSON.parse(userJson);
         try {
-            const response = await fetch(`https://footwear-y0zi.onrender.com/cart?email=${encodeURIComponent(user.email)}`);
+            const response = await fetch(`${API_BASE_URL}/cart?email=${encodeURIComponent(user.email)}`);
             if (response.ok) {
                 const data = await response.json();
                 items = Array.isArray(data.items) ? data.items : [];
@@ -229,11 +231,11 @@ async function handleCartAction(id, action, targetElement) {
     // --- LOGGED IN USER ACTION ---
     try {
         const email = JSON.parse(userJson).email;
-        let url = 'https://footwear-y0zi.onrender.com/cart/update';
+        let url = `${API_BASE_URL}/cart/update`;
         let body = { email, id: String(id) };
 
         if (action === 'remove') {
-            url = 'https://footwear-y0zi.onrender.com/cart/remove';
+            url = `${API_BASE_URL}/cart/remove`;
         } else {
             body.delta = action === 'increase' ? 1 : -1;
         }

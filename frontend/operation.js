@@ -1,3 +1,5 @@
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:" ? "http://localhost:3000" : "https://footwear-y0zi.onrender.com";
+
 // ------------------ NOTIFICATION SYSTEM ------------------
 function showNotification(message, type = 'success') {
     // Remove existing notification
@@ -92,7 +94,7 @@ async function syncCartCountFromServer() {
     // 2. Add Server Cart items (if logged in)
     try {
         const user = JSON.parse(userJson);
-        const response = await fetch(`https://footwear-y0zi.onrender.com/cart?email=${encodeURIComponent(user.email)}`);
+        const response = await fetch(`${API_BASE_URL}/cart?email=${encodeURIComponent(user.email)}`);
         const data = await response.json();
         if (response.ok && Array.isArray(data.items)) {
             const serverTotal = data.items.reduce((s, it) => s + (Number(it.quantity) || 0), 0);
@@ -198,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // LOGGED IN USER LOGIC (Backend Request)
         try {
-            const response = await fetch("https://footwear-y0zi.onrender.com/add-to-cart", {
+            const response = await fetch(`${API_BASE_URL}/add-to-cart`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -271,7 +273,7 @@ async function register() {
         errorElement.style.display = "none";
     }
 
-    const BASE_URL = "https://footwear-y0zi.onrender.com";
+    const BASE_URL = API_BASE_URL;
     try {
         const response = await fetch(`${BASE_URL}/register`, {
             method: "POST",
@@ -344,7 +346,7 @@ async function login() {
         return;
     }
 
-    const BASE_URL = "https://footwear-y0zi.onrender.com";
+    const BASE_URL = API_BASE_URL;
     try {
         console.log("[Login] Sending credentials:", { email, password });
         const response = await fetch(`${BASE_URL}/login`, {
@@ -459,7 +461,7 @@ async function logout() {
             const email = JSON.parse(userJson).email;
 
             // 🔹 Clear cart on backend
-            await fetch("https://footwear-y0zi.onrender.com/cart/clear", {
+            await fetch(`${API_BASE_URL}/cart/clear`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
@@ -599,7 +601,7 @@ async function changePassword() {
         return;
     }
 
-    const BASE_URL = "https://footwear-y0zi.onrender.com";
+    const BASE_URL = API_BASE_URL;
     try {
         const response = await fetch(`${BASE_URL}/change-password`, {
             method: "POST",
