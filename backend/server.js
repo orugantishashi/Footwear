@@ -26,7 +26,17 @@ app.use((req, res, next) => {
 });
 
 // ==================== MONGO SETUP ====================
+// ==================== MONGO SETUP ====================
 const uri = process.env.MONGO_URI;
+
+if (!uri) {
+    console.error("❌ FATAL ERROR: MONGO_URI environment variable is missing!");
+    process.exit(1);
+}
+
+// Log masked URI for debugging (hides password)
+const maskedUri = uri.replace(/:([^@]+)@/, ":****@");
+console.log(`[Mongo] Attempting to connect to: ${maskedUri}`);
 
 const client = new MongoClient(uri, {
     maxPoolSize: 10,
