@@ -455,30 +455,34 @@ function updateNavUI() {
 async function logout() {
     try {
         const userJson = localStorage.getItem("user");
-        const displaycart = document.getElementById("cart-count");
 
         if (userJson) {
             const email = JSON.parse(userJson).email;
 
-            // 🔹 Clear cart on backend
-            await fetch(`${API_BASE_URL}/cart/clear`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
-            });
+            // 🔹 Clear cart on backend (Best effort - don't block logout if fails)
+            try {
+                await fetch(`${API_BASE_URL}/cart/clear`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email }),
+                });
+            } catch (serverErr) {
+                console.warn("Backend logout sync failed:", serverErr);
+            }
         }
-
-        // 🔹 Clear local storage & UI
+    } catch (err) {
+        console.error("Logout error:", err);
+    } finally {
+        // 🔹 ALWAYS Clear local storage & UI
         localStorage.removeItem("user");
         localStorage.removeItem("cartCount");
         cartCount = 0;
+
+        const displaycart = document.getElementById("cart-count");
         if (displaycart) displaycart.textContent = "0";
 
         updateNavUI();
         window.location.reload();
-    } catch (err) {
-        console.error("Logout error:", err);
-        alert("Logout failed: " + err.message);
     }
 }
 
