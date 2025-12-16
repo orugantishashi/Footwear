@@ -680,9 +680,7 @@ footer {
     }
 
     /* Center content hidden usually */
-    .nav-content {
-        /* This is usually handled by hamburger.css to be hidden or fixed */
-    }
+
 
     /* Right Side Container */
     .nav-right {
