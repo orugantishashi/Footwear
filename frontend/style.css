@@ -5,7 +5,15 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-    /* Ensure EVERYTHING uses this font */
+}
+
+html,
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    /* Strict overflow control */
 }
 
 body {
@@ -14,6 +22,8 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    position: relative;
+    /* Context for fixed items */
 }
 
 /* ... existing styles ... */
@@ -99,16 +109,18 @@ nav {
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
-    padding: 10px 30px;
+    padding: 10px 15px;
+    /* Reduced padding for mobile safety */
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     position: sticky;
+    /* Make top nav sticky */
     top: 0;
     z-index: 1000;
-    min-height: 60px;
     width: 100%;
-    margin-bottom: 20px;
+    margin: 0;
+    /* Remove bottom margin to prevent gaps */
     box-sizing: border-box;
 }
 
@@ -638,7 +650,8 @@ footer {
    Mobile Bottom Nav (Hidden on Desktop)
    =========================== */
 .bottom-nav {
-    display: none;
+    display: none !important;
+    /* Force hide on desktop */
 }
 
 /* ===========================
@@ -650,7 +663,8 @@ footer {
     /* --- Hide Top Nav Elements on Mobile --- */
     #profile,
     .toggle,
-    .nav-search {
+    .nav-search,
+    .nav-icons {
         display: none !important;
     }
 
@@ -723,18 +737,24 @@ footer {
     /* --- Banner --- */
     .banner {
         height: auto;
-        width: 94%;
-        margin: 10px auto;
-        border-radius: 12px;
+        min-height: 200px;
+        width: 100% !important;
+        /* Force full width */
+        margin: 0 !important;
+        /* Force no margin */
+        border-radius: 0 !important;
         display: block;
+        max-width: 100vw;
+        /* Ensure no overflow */
     }
 
     .banner img {
         width: 100%;
-        height: auto;
-        object-fit: contain;
+        height: 100%;
+        object-fit: cover;
+        /* Cover nicely */
         display: block;
-        border-radius: 12px;
+        border-radius: 0;
     }
 
     .slipperbanners {
@@ -752,14 +772,48 @@ footer {
     }
 
     /* --- Categories & Cards --- */
+    /* --- Categories & Cards --- */
+    /* --- Categories & Cards (Vertical Stack, Big Images) --- */
     .cards {
+        display: grid;
+        /* Vertical stack */
         grid-template-columns: 1fr;
-        padding: 20px;
-        gap: 20px;
+        gap: 30px;
+        padding: 20px 20px 40px 20px;
+        overflow-x: visible;
+        /* No scroll */
+        margin-bottom: 20px;
+    }
+
+    .card {
+        width: 100%;
+        height: 350px;
+        /* Reduced from 450px to 350px */
+        min-width: 0;
+        aspect-ratio: auto;
+        /* Allow height to define */
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     }
 
     .card img {
-        height: 200px;
+        height: 100%;
+        /* Fill the container */
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .card-overlay {
+        top: 0;
+        height: 100%;
+        padding: 1.5rem;
+        justify-content: flex-end;
+        /* Force text to bottom */
+    }
+
+    .card h3 {
+        font-size: 1.8rem;
+        /* Scale down slightly for mobile safety */
     }
 
     /* --- Best Sellers / Horizontal Scroll --- */
@@ -800,6 +854,8 @@ footer {
         gap: 30px;
     }
 
+
+
     .footer-col h3::after {
         left: 50%;
         transform: translateX(-50%);
@@ -810,40 +866,82 @@ footer {
     }
 
     /* --- Mobile Bottom Navigation --- */
+    body {
+        /* Add padding to page body so bottom content isn't covered by fixed nav */
+        padding-bottom: 80px;
+    }
+
     .bottom-nav {
-        display: flex;
+        display: flex !important;
         justify-content: space-around;
         align-items: center;
         position: fixed;
         bottom: 0;
         left: 0;
-        width: 100%;
+        right: 0;
+        /* Use right:0 instead of width: 100% to ensure fit */
         background-color: #fff;
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
         padding: 10px 0;
-        z-index: 1000;
+        z-index: 9999;
+        /* Ensure on top */
         border-top: 1px solid #eee;
+        height: 60px;
+        /* Fixed height for stability */
     }
 
     .bottom-nav-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        text-decoration: none;
-        color: #666;
-        font-size: 0.8rem;
-        font-weight: 500;
+        justify-content: center;
         gap: 4px;
-        padding: 5px;
-        border-radius: 8px;
-        transition: color 0.3s, background-color 0.3s;
+        text-decoration: none;
+        flex: 1;
+        padding: 8px 12px;
+        /* Add padding for background */
+        border-radius: 12px;
+        /* Rounded corners for background */
+        transition: all 0.3s ease;
+        margin: 0 10px;
+        /* Spacing between items */
     }
 
-    .bottom-nav-item:hover,
-    .bottom-nav-item.active {
-        color: #e53935;
-        background-color: #fff5f5;
+    .bottom-nav-item span {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        font-size: 12px;
+        color: #666;
     }
+
+    /* Active State Styling */
+    .bottom-nav-item.active {
+        background-color: #fff0f0;
+        /* Light pink background */
+    }
+
+    .bottom-nav-item.active span {
+        font-weight: 600;
+        color: #e53935;
+        /* Red text */
+        font-size: 13px;
+    }
+
+    .bottom-nav-item svg {
+        width: 24px;
+        height: 24px;
+        stroke: #666;
+        stroke-width: 2;
+        fill: none;
+    }
+
+    .bottom-nav-item.active svg {
+        stroke: #e53935;
+        /* Red icon */
+        stroke-width: 2.5;
+    }
+
+
 
     .bottom-nav-item .icon {
         display: flex;
@@ -1013,6 +1111,8 @@ footer {
     border-color: #ffebee;
     color: #d32f2f;
     margin-top: 10px;
+    /* Ensure last item isn't hidden by bottom nav */
+    margin-bottom: 60px !important;
 }
 
 .logout-btn:hover {
@@ -1340,4 +1440,140 @@ body.dark-mode .wishlist-item {
 
 body.dark-mode .wishlist-item h4 {
     color: #eee;
+}
+
+/* Lazy Loading Transitions */
+img.lazy-image {
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+}
+
+img.loaded {
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+/* ===========================
+   New UI Elements (Cart/Wishlist)
+   =========================== */
+
+/* Ensure relative positioning for absolute children like wishlist button */
+.product-card,
+.card {
+    position: relative;
+}
+
+/* Nav Icons Group */
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.nav-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    text-decoration: none !important;
+    /* Force remove underline */
+    border-bottom: none !important;
+    transition: transform 0.2s ease, color 0.2s ease;
+    line-height: 0;
+}
+
+.nav-icon svg {
+    width: 26px;
+    height: 26px;
+    stroke-width: 2;
+}
+
+.nav-icon:hover {
+    transform: translateY(-2px);
+    color: #e53935;
+    text-decoration: none;
+}
+
+.nav-icon:visited {
+    color: #333;
+    text-decoration: none;
+}
+
+/* Notification Badge */
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background-color: #e53935;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0 4px;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Wishlist Button on Product Cards */
+.wishlist-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: transform 0.2s, color 0.2s;
+    color: #ccc;
+    font-size: 18px;
+}
+
+.wishlist-btn:hover {
+    transform: scale(1.1);
+    color: #e53935;
+}
+
+.wishlist-btn.active {
+    color: #e53935;
+}
+
+/* Dark Mode Overrides */
+body.dark-mode .nav-icon {
+    color: #fff;
+}
+
+body.dark-mode .nav-icon:hover {
+    color: #ff5252;
+}
+
+body.dark-mode .nav-icon:visited {
+    color: #fff;
+}
+
+body.dark-mode .wishlist-btn {
+    background-color: #333;
+    color: #666;
+}
+
+body.dark-mode .wishlist-btn.active {
+    color: #ff5252;
+}
+
+body.dark-mode .badge {
+    border-color: #1a1a1a;
 }

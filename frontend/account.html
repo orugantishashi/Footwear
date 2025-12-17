@@ -2,66 +2,276 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Account - Foot Mart</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="hamburger.css">
-    <!-- Reusing minimal styles for the account layout or adding new ones in style.css -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --accent: #e53935;
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --border: #e0e0e0;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: #333;
+            padding-top: 70px;
+            /* navbar space */
+            padding-bottom: 60px;
+            /* bottom nav space */
+            overflow-x: hidden;
+        }
+
+        /* ================= NAVBAR ================= */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: #fff;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        nav h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+            /* Extra Bold */
+            color: var(--primary);
+        }
+
+        /* ================= ACCOUNT PAGE ================= */
+        .account-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .account-header-card {
+            background: var(--card);
+            border-radius: 20px;
+            /* More rounded */
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            /* Stacked vertically like image */
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+            box-shadow: none;
+            /* Image looks flat or very subtle */
+            margin-bottom: 2rem;
+        }
+
+        .account-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin-bottom: 10px;
+            border: 4px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .account-info h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            /* Big name */
+            font-weight: 700;
+        }
+
+        .account-info p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .login-btn-large {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        /* ================= ACTIONS ================= */
+        .account-actions {
+            background: var(--card);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .action-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 1.5rem 1.2rem;
+            /* Initial increase, will be adjusted by CSS below */
+            padding: 20px;
+            /* Big button size */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .action-btn:last-child {
+            border-bottom: none;
+        }
+
+        .action-icon {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+            /* Bolder text */
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        /* Use emojis font size */
+        .action-icon span {
+            font-size: 24px;
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            text-decoration: none;
+
+            /* Distribute space evenly */
+        }
+
+        .bottom-nav-item span {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 13px;
+            /* Slightly larger */
+            color: #444;
+            /* Default dark grey */
+        }
+
+        .bottom-nav-item.active span {
+            font-weight: 700;
+            color: #000;
+        }
+
+        .bottom-nav-item svg {
+            width: 24px;
+            height: 24px;
+            stroke: #444;
+            /* Dark grey stroke */
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .bottom-nav-item.active svg {
+            stroke: #000;
+            stroke-width: 2.5;
+            /* Bolder icon when active */
+        }
+
+        .logout-action {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* ================= BOTTOM NAV ================= */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .bottom-nav-item {
+            text-decoration: none;
+            color: #444;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
-    <nav>
-        <a href="index.html" style="text-decoration: none;">
-            <h1>Foot Mart</h1>
-        </a>
-        <button class="hamburger" id="hamburger" aria-label="Menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <div class="nav-content" id="nav-content">
-            <ul id="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="men.html">Men</a></li>
-                <li><a href="women.html">Women</a></li>
-                <li><a href="kids.html">Kids</a></li>
-            </ul>
-        </div>
-        <form id="nav-search-form" class="nav-search" autocomplete="off">
-            <input type="search" id="nav-search-input" placeholder="Search Nike shoes" aria-label="Search Nike shoes">
-            <button type="submit">Search</button>
-        </form>
-        <div id="auth-buttons" class="auth-buttons">
-            <a href="login.html" class="sign-in-link">Sign In</a>
-            <button class="sign-up-btn" onclick="window.location.href='login.html#register'">Sign Up</button>
-        </div>
 
-        <div id="profile" class="hidden">
-            <button id="profile-btn" aria-haspopup="true" aria-expanded="false">👤</button>
-            <div id="profile-menu" class="profile-menu hidden">
-                <p id="profile-name"></p>
-                <button id="edit-details">Edit details</button>
-                <button id="change-password">Change Password</button>
-                <button id="logout">Logout</button>
-            </div>
-        </div>
+    <!-- NAVBAR -->
+    <nav>
+        <h1>Foot Mart</h1>
     </nav>
 
+    <!-- ACCOUNT -->
     <div class="account-container">
-        <!-- Logged In View -->
+
+        <!-- LOGGED IN -->
         <div id="account-logged-in" class="hidden">
             <div class="account-header-card">
-                <div class="account-avatar">
-                    👤
-                </div>
+                <div class="account-avatar">👤</div>
                 <div class="account-info">
-                    <h2 id="page-profile-name">User Name</h2>
+                    <h2 id="page-profile-name">User</h2>
                     <p id="page-profile-email">email@example.com</p>
                 </div>
             </div>
 
             <div class="account-actions">
+                <button class="action-btn" onclick="window.location.href='wishlist.html'">
+                    <div class="action-icon">
+                        <span>❤️</span> My Wishlist
+                    </div>
+                    <span>›</span>
+                </button>
+
                 <button class="action-btn" onclick="window.location.href='login.html#change-password'">
                     <div class="action-icon">
                         <span>🔒</span> Change Password
@@ -69,7 +279,7 @@
                     <span>›</span>
                 </button>
 
-                <button class="action-btn" onclick="alert('Need help? Contact support@footmart.com')">
+                <button class="action-btn">
                     <div class="action-icon">
                         <span>❓</span> Help & Support
                     </div>
@@ -84,102 +294,45 @@
             </div>
         </div>
 
-        <!-- Not Logged In View -->
+        <!-- LOGGED OUT -->
         <div id="account-logged-out">
             <div class="account-header-card">
-                <div class="account-avatar">
-                    ?
-                </div>
+                <div class="account-avatar">?</div>
                 <div class="account-info">
                     <h2>Welcome Guest</h2>
-                    <p>Login to manage your orders and profile.</p>
+                    <p>Login to manage your profile.</p>
                     <a href="login.html" class="login-btn-large">Login / Register</a>
                 </div>
             </div>
-            <div class="account-actions">
-
-                <button class="action-btn" onclick="alert('Need help? Contact support@footmart.com')">
-                    <div class="action-icon">
-                        <span>❓</span> Help & Support
-                    </div>
-                    <span>›</span>
-                </button>
-            </div>
         </div>
+
     </div>
 
-    <!-- Professional Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-col">
-                <h3>Foot Mart</h3>
-                <p class="footer-text">Your one-stop destination for premium footwear. Quality, comfort,
-                    and style in every step.</p>
-            </div>
-            <div class="footer-col">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="men.html">Men's Collection</a></li>
-                    <li><a href="women.html">Women's Collection</a></li>
-                    <li><a href="kids.html">Kids' Collection</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h3>Customer Care</h3>
-                <ul>
-                    <li><a href="#">Track Order</a></li>
-                    <li><a href="#">Shipping Policy</a></li>
-                    <li><a href="#">Returns & Exchange</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h3>Follow Us</h3>
-                <div class="social-links">
-                    <a href="#">FB</a>
-                    <a href="#">IG</a>
-                    <a href="#">TW</a>
-                    <a href="#">YT</a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Foot Mart. All Rights Reserved. | Designed for Comfort.</p>
-        </div>
-    </footer>
-
-    <!-- Mobile Bottom Navigation -->
+    <!-- BOTTOM NAV -->
     <div class="bottom-nav">
         <a href="index.html" class="bottom-nav-item">
-            <span class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
             <span>Home</span>
         </a>
         <a href="cart.html" class="bottom-nav-item">
-            <span class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
             <span>Cart</span>
         </a>
         <a href="account.html" class="bottom-nav-item active">
-            <span class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
             <span>Account</span>
         </a>
     </div>
@@ -187,28 +340,28 @@
     <script src="operation.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const userJson = localStorage.getItem("user");
-            const loggedInView = document.getElementById("account-logged-in");
-            const loggedOutView = document.getElementById("account-logged-out");
+            const user = localStorage.getItem("user");
+            const inView = document.getElementById("account-logged-in");
+            const outView = document.getElementById("account-logged-out");
 
-            if (userJson) {
-                const user = JSON.parse(userJson);
-                document.getElementById("page-profile-name").textContent = user.name || "User";
-                document.getElementById("page-profile-email").textContent = user.email || "";
-
-                loggedInView.classList.remove("hidden");
-                loggedOutView.classList.add("hidden");
+            if (user) {
+                const u = JSON.parse(user);
+                document.getElementById("page-profile-name").textContent = u.name || "User";
+                document.getElementById("page-profile-email").textContent = u.email || "";
+                inView.classList.remove("hidden");
+                outView.classList.add("hidden");
             } else {
-                loggedInView.classList.add("hidden");
-                loggedOutView.classList.remove("hidden");
+                inView.classList.add("hidden");
+                outView.classList.remove("hidden");
             }
 
-            // Logout Handler specific to this page button
-            document.getElementById("page-logout-btn").addEventListener("click", () => {
-                if (typeof logout === 'function') logout();
-            });
+            const logoutBtn = document.getElementById("page-logout-btn");
+            if (logoutBtn && typeof logout === "function") {
+                logoutBtn.onclick = logout;
+            }
         });
     </script>
+
 </body>
 
 </html>

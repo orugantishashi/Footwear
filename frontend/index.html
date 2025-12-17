@@ -30,7 +30,7 @@
     content="Discover the latest collection of stylish and comfortable shoes for men, women, and kids at Foot Mart.">
   <meta property="twitter:image" content="./images/banners/mens banner.jpg">
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=5" />
   <link rel="stylesheet" href="hamburger.css" />
 </head>
 
@@ -50,6 +50,8 @@
       <button type="submit">Search</button>
     </form>
 
+
+
     <!---- Login Page-->
     <div id="auth-buttons" class="auth-buttons">
       <a href="login.html" class="sign-in-link">Sign In</a>
@@ -61,6 +63,7 @@
       <div id="profile-menu" class="profile-menu hidden">
         <p id="profile-name"></p>
         <button id="edit-details">Edit details</button>
+        <button onclick="window.location.href='wishlist.html'">My Wishlist</button>
         <button id="change-password">Change Password</button>
         <button id="logout">Logout</button>
       </div>
@@ -129,6 +132,7 @@
     </div>
 
     <div class="product-card" data-id="3" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(103)">
+
       <img src="./images/products/shoes/shoe 3.webp" alt="Shoe 3" />
       <h3>Puma Classic</h3>
       <p>Unisex Sneakers</p>
@@ -137,6 +141,7 @@
     </div>
 
     <div class="product-card" data-id="4" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(104)">
+
       <img src="./images/products/shoes/shoe 4.webp" alt="Shoe 4" />
       <h3>Reebok Flex</h3>
       <p>Kids' Shoes</p>
@@ -145,6 +150,7 @@
     </div>
 
     <div class="product-card" data-id="5" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(105)">
+
       <img src="./images/products/shoes/shoe 5.webp" alt="Shoe 5" />
       <h3>Skechers GoWalk</h3>
       <p>Comfort Walking Shoes</p>
@@ -153,6 +159,7 @@
     </div>
 
     <div class="product-card" data-id="6" onclick="if(event.target.tagName !== 'BUTTON') viewProduct(106)">
+
       <img src="./images/products/shoes/shoe 6.jpg" alt="Shoe 6" />
       <h3>RedTap Shoe</h3>
       <p>Casual Shoes Wit Comfort And Reilable</p>
@@ -305,6 +312,7 @@
       </span>
       <span>Home</span>
     </a>
+
     <a href="cart.html" class="bottom-nav-item">
       <span class="icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"

@@ -71,7 +71,7 @@
         .cart-item {
             display: grid;
             /* Fixed width for image (180px) + gap + details + actions */
-            grid-template-columns: 180px 1fr auto;
+            grid-template-columns: 80px 1fr auto;
             gap: 2rem;
             padding: 2rem 0;
             border-bottom: 1px solid var(--border-color);
@@ -84,8 +84,8 @@
         }
 
         .cart-item img {
-            width: 180px;
-            height: 180px;
+            width: 80px;
+            height: 80px;
             object-fit: cover;
             border-radius: 12px;
             background-color: #f0f0f0;
@@ -331,7 +331,7 @@
 <body>
 
     <nav>
-        <a href="index.html" class="no-decoration">
+        <a href="index.html" style="text-decoration: none;">
             <h1>Foot Mart</h1>
         </a>
         <div class="nav-content" id="nav-content">
@@ -346,6 +346,7 @@
             <input type="search" id="nav-search-input" placeholder="Search Nike shoes" aria-label="Search Nike shoes">
             <button type="submit">Search</button>
         </form>
+
         <div id="auth-buttons" class="auth-buttons">
             <a href="login.html" class="sign-in-link">Sign In</a>
             <button class="sign-up-btn" onclick="window.location.href='login.html#register'">Sign Up</button>
@@ -356,6 +357,7 @@
             <div id="profile-menu" class="profile-menu hidden">
                 <p id="profile-name"></p>
                 <button id="edit-details">Edit details</button>
+                <button onclick="window.location.href='wishlist.html'">My Wishlist</button>
                 <button id="change-password">Change Password</button>
                 <button id="logout">Logout</button>
             </div>
@@ -446,6 +448,18 @@
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof syncCartCountFromServer === 'function') {
                 syncCartCountFromServer();
+            }
+            // Ensure login state is checked effectively
+            if (typeof checkLoginState === 'function') {
+                checkLoginState();
+            } else {
+                // Fallback if operation.js hasn't loaded yet or function missing
+                const user = localStorage.getItem("user");
+                if (user) {
+                    document.getElementById("auth-buttons").classList.add("hidden");
+                    document.getElementById("profile").classList.remove("hidden");
+                    document.getElementById("profile-name").textContent = JSON.parse(user).name;
+                }
             }
         });
     </script>

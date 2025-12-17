@@ -1,5 +1,69 @@
 const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:" ? "http://localhost:3000" : "https://footwear-y0zi.onrender.com";
 
+/**
+ * LazyImageLoader: Handles efficient image loading using IntersectionObserver.
+ * Ensures images are only loaded when nearing the viewport and stay loaded.
+ */
+class LazyImageLoader {
+    constructor() {
+        this.observer = null;
+        this.init();
+    }
+
+    init() {
+        if ("IntersectionObserver" in window) {
+            this.observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        this.loadImage(img);
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                root: null, // viewport
+                rootMargin: "200px", // Load images 200px before they appear
+                threshold: 0.01 // Trigger as soon as 1% is visible (or partially near)
+            });
+        }
+    }
+
+    observe(imgElement) {
+        if (!imgElement || !imgElement.dataset.src) return;
+
+        // If native lazy loading is supported and preferred, we could skip OB/unobserve,
+        // but robust custom handling ensures "stay loaded" behavior and control.
+        if (this.observer) {
+            imgElement.classList.add('lazy-image');
+            this.observer.observe(imgElement);
+        } else {
+            // Fallback for no Observer support
+            this.loadImage(imgElement);
+        }
+    }
+
+    loadImage(img) {
+        const src = img.dataset.src;
+        if (!src) return;
+
+        // Preload image object to ensure caching before setting DOM src
+        const tempImage = new Image();
+        tempImage.onload = () => {
+            img.src = src;
+            img.classList.remove('lazy-image');
+            img.classList.add('loaded');
+            img.removeAttribute('data-src');
+        };
+        tempImage.onerror = () => {
+            // retain placeholder or set error image
+            if (img.onerror) img.onerror();
+        };
+        tempImage.src = src;
+    }
+}
+
+const lazyLoader = new LazyImageLoader();
+
 // ------------------ NOTIFICATION SYSTEM ------------------
 function showNotification(message, type = 'success') {
     // Remove existing notification
@@ -107,6 +171,85 @@ async function syncCartCountFromServer() {
     updateCartCount(total);
 }
 
+// ------------------ WISHLIST HANDLING ------------------
+function getWishlist() {
+    return JSON.parse(localStorage.getItem("wishlist") || "[]");
+}
+
+function updateWishlistBadge() {
+    const wishlist = getWishlist();
+    const badge = document.getElementById("wishlist-count");
+    if (badge) {
+        badge.textContent = wishlist.length;
+        badge.style.display = wishlist.length > 0 ? 'flex' : 'none';
+    }
+}
+
+function isWishlisted(id) {
+    const wishlist = getWishlist();
+    return wishlist.some(item => String(item.id) === String(id));
+}
+
+function toggleWishlist(btn) {
+    const user = localStorage.getItem("user");
+    if (!user) {
+        showNotification("Please login to use Wishlist", "info");
+        setTimeout(() => window.location.href = "login.html", 1500);
+        return;
+    }
+
+    const card = btn.closest(".product-card") || btn.closest("#product-card-wrapper");
+    if (!card) return;
+
+    // Extract Data
+    let id = card.getAttribute("data-id");
+
+    // For dynamically loaded products or static ones
+    // Try to get data from card context if possible, or scrape DOM
+    let name = card.querySelector("h3")?.textContent.trim();
+    let priceText = card.querySelector(".price")?.textContent.trim();
+    let img = card.querySelector("img")?.getAttribute("data-src") || card.querySelector("img")?.src;
+    let price = parseInt(priceText?.replace(/[^0-9]/g, "") || "0", 10);
+
+    // Handle Product Page special case
+    if (!id && window.location.pathname.includes("product.html")) {
+        const params = new URLSearchParams(window.location.search);
+        id = params.get("id");
+        name = document.getElementById("product-name")?.textContent.trim();
+        priceText = document.getElementById("product-price")?.textContent.trim();
+        img = document.getElementById("product-img")?.src;
+        price = parseInt(priceText?.replace(/[^0-9]/g, "") || "0", 10);
+    }
+
+    if (!id) {
+        showNotification("Error: Product ID not found", "error");
+        return;
+    }
+
+    let wishlist = getWishlist();
+    const index = wishlist.findIndex(item => String(item.id) === String(id));
+
+    if (index > -1) {
+        // Remove
+        wishlist.splice(index, 1);
+        btn.classList.remove("active");
+        showNotification("Removed from Wishlist", "info");
+    } else {
+        // Add
+        wishlist.push({ id, name, price, img });
+        btn.classList.add("active");
+        showNotification("Added to Wishlist", "success");
+
+        // Add animation effect
+        btn.style.transform = "scale(1.4)";
+        setTimeout(() => btn.style.transform = "scale(1)", 200);
+    }
+
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    updateWishlistBadge();
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
     const cartCountElement = document.getElementById("cart-count");
     document.addEventListener("click", handleBuyNowClick);
@@ -120,6 +263,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Always sync cart count from server on page load (overwrites cache with real data)
     syncCartCountFromServer();
+
+    // Auth Check for Wishlist UI
+    const user = localStorage.getItem("user");
+    const wishlistNavIcon = document.querySelector('.nav-icon[aria-label="Wishlist"]');
+
+    if (user) {
+        updateWishlistBadge(); // Only update/show if logged in
+        // Ensure wishlist nav icon is visible (or hidden per new requirement)
+        // User asked to "remove watchlist for guest and only show for login user"
+        // Also "place watchlist in account section"
+
+        // If we want to hide the TOP nav heart and put it in dropdown:
+        if (wishlistNavIcon) wishlistNavIcon.style.display = 'none'; // removing from top bar as per request?
+        // User said: "remove watchlist is not nice... remove watchlist for guest and only show for login user and plcae watchlist in account section"
+        // Interpretation: Remove from top nav for everyone? Or just guest? 
+        // "place watchlist in account section" -> implies it shouldn't be in the top nav icons row next to cart.
+
+    } else {
+        if (wishlistNavIcon) wishlistNavIcon.style.display = 'none'; // definitely hide for guest
+    }
+
+    // Mark static wishlist buttons as active if needed AND logged in
+    if (user) {
+        document.querySelectorAll(".wishlist-btn").forEach(btn => {
+            const card = btn.closest(".product-card") || btn.closest("#product-card-wrapper");
+            if (card) {
+                const id = card.getAttribute("data-id");
+                if (id && isWishlisted(id)) {
+                    btn.classList.add("active");
+                }
+            }
+        });
+    }
 
     function handleBuyNowClick(event) {
         const button = event.target.closest(".buynow");
@@ -549,7 +725,7 @@ async function loadCategoryProducts(category) {
 
         filteredProducts.forEach(product => {
             const card = document.createElement('div');
-            card.className = 'product-card'; // Changed to 'product-card' to match index.html styling
+            card.className = 'product-card';
             card.setAttribute('data-id', product.id);
             card.onclick = (e) => {
                 if (e.target.tagName !== 'BUTTON') {
@@ -558,20 +734,36 @@ async function loadCategoryProducts(category) {
             };
 
             const imgPath = `./images/${product.image}`;
+            // Use a placeholder or transparent pixel initially
+            // Placeholder: 1x1 transparent gif or a cheap loading SVG
+            const placeholder = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
             card.innerHTML = `
-                <img src="${imgPath}" alt="${product.name}" onerror="this.src='./images/products/shoes/shoe 1.jpg'">
+                <button class="wishlist-btn ${isWishlisted(product.id) ? 'active' : ''}" 
+                    onclick="event.stopPropagation(); toggleWishlist(this)" 
+                    aria-label="Wishlist">❤</button>
+                <img 
+                    src="${placeholder}" 
+                    data-src="${imgPath}" 
+                    alt="${product.name}" 
+                    style="min-height: 200px; background: #f0f0f0;"
+                    onerror="this.src='./images/products/shoes/shoe 1.jpg'; this.style.background='none';"
+                >
                 <h3>${product.name}</h3>
-                <p>${product.category}'s Footwear</p>
+                <p>Comfort & Style</p>
                 <span class="price">${product.price}</span>
                 <button class="buynow">Add Cart</button>
             `;
 
             productGrid.appendChild(card);
+
+            // Observe the image for lazy loading
+            const img = card.querySelector('img');
+            if (img) lazyLoader.observe(img);
         });
 
         // Scroll to the product section
-        sectionTitle?.scrollIntoView({ behavior: 'smooth' });
+        // sectionTitle?.scrollIntoView({ behavior: 'smooth' }); // Optional: might be annoying on reload
 
     } catch (err) {
         console.error("Error loading products:", err);

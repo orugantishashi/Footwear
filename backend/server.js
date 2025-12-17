@@ -16,7 +16,15 @@ app.use(cors({ origin: "*", methods: "GET,POST,PUT,DELETE", allowedHeaders: "Con
 app.use(express.json());
 
 // Serve frontend files (go up to html-css-project2 directory)
-app.use(express.static(path.join(__dirname, "../frontend")));
+app.use(express.static(path.join(__dirname, "../frontend"), {
+    maxAge: '0', // Disable cache for dev
+    setHeaders: (res, path) => {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+        res.setHeader('Surrogate-Control', 'no-store');
+    }
+}));
 
 
 // Request logging middleware
