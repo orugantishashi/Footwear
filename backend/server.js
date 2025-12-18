@@ -149,6 +149,64 @@ app.post("/login", async (req, res) => {
     }
 });
 
+// ==================== CHANGE PASSWORD ====================
+app.post("/change-password", async (req, res) => {
+    try {
+        const { email, currentPassword, newPassword } = req.body;
+
+        if (!email || !currentPassword || !newPassword) {
+            return res.status(400).json({ success: false, message: "All fields are required" });
+        }
+
+        const users = getDB().collection("users");
+
+        // Verify current password
+        const user = await users.findOne({ email, password: currentPassword });
+        if (!user) {
+            return res.status(401).json({ success: false, message: "Incorrect current password" });
+        }
+
+        // Update to new password
+        await users.updateOne(
+            { email },
+            { $set: { password: newPassword } }
+        );
+
+        res.json({ success: true, message: "Password updated successfully" });
+    } catch (err) {
+        console.error("Change Password Error:", err);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
+// ==================== RESET PASSWORD (FORGOT PASSWORD) ====================
+app.post("/reset-password", async (req, res) => {
+    try {
+        const { email, newPassword } = req.body;
+
+        if (!email || !newPassword) {
+            return res.status(400).json({ success: false, message: "Email and new password are required" });
+        }
+
+        const users = getDB().collection("users");
+
+        const user = await users.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        await users.updateOne(
+            { email },
+            { $set: { password: newPassword } }
+        );
+
+        res.json({ success: true, message: "Password reset successfully" });
+    } catch (err) {
+        console.error("Reset Password Error:", err);
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
 // ==================== ADD TO CART ====================
 app.post("/add-to-cart", async (req, res) => {
     try {

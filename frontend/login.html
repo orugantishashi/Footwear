@@ -25,7 +25,7 @@
                 <label class="remember-me">
                     <input type="checkbox"> Remember me
                 </label>
-                <a href="#" class="forgot-pass">Forgot Password?</a>
+                <a href="#" onclick="showForgot(); return false;" class="forgot-pass">Forgot Password?</a>
             </div>
 
             <p id="login-error" class="error-message"></p>
@@ -57,6 +57,27 @@
 
             <p class="switch-text">
                 Already have an account? <span onclick="showLogin()" class="link">Login here</span>
+            </p>
+        </div>
+
+        <div class="form-box hidden" id="forgot-box">
+            <h2>Reset Password</h2>
+            <p class="subtitle">Enter your email to reset password</p>
+
+            <div class="input-group">
+                <input type="email" id="femail" placeholder="Email Address" required>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="fnewpassword" placeholder="New Password" required>
+            </div>
+
+            <p id="forgot-error" class="error-message"></p>
+
+            <button onclick="handleForgotPassword()" class="btn-primary">Reset Password</button>
+
+            <p class="switch-text">
+                Remembered? <span onclick="showLogin()" class="link">Login here</span>
             </p>
         </div>
 

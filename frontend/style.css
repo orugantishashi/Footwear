@@ -105,22 +105,23 @@ footer.dark-mode {
 /* ---------- Navigation ---------- */
 nav {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    padding: 10px 15px;
-    /* Reduced padding for mobile safety */
+    flex-wrap: nowrap;
+    /* Prevent wrapping on desktop if possible */
+    gap: 25px;
+    /* Consistent spacing between items */
+    padding: 12px 40px;
+    /* Better horizontal padding */
     background-color: #fff;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #eee;
+    /* Softer border */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    /* Softer shadow */
     position: sticky;
-    /* Make top nav sticky */
     top: 0;
     z-index: 1000;
     width: 100%;
     margin: 0;
-    /* Remove bottom margin to prevent gaps */
     box-sizing: border-box;
 }
 
@@ -128,24 +129,41 @@ nav {
 nav h1 {
     font-family: 'Poppins', sans-serif;
     font-size: 1.8rem;
-    color: #333;
+    color: #222;
+    /* Darker black */
+    font-weight: 700;
+    margin-right: 10px;
 }
 
 nav ul {
     list-style: none;
     display: flex;
-    gap: 20px;
+    gap: 10px;
+    /* Reduced gap since li has padding now */
+    margin: 0;
 }
 
 nav li {
     cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    padding: 8px 15px;
+    /* Add padding for the pill shape */
+    border-radius: 6px;
+    /* slightly rounded corners like the image */
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 16px;
+    color: #555;
 }
 
 nav li:hover {
     background-color: #e0e0e0;
+    /* Light grey background */
+    color: #000;
+}
+
+/* Remove old underline effect and homepage specific overrides */
+nav li::after {
+    display: none;
 }
 
 nav li a {
@@ -156,31 +174,47 @@ nav li a {
 .nav-search {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex: 1 1 260px;
-    max-width: 360px;
+    gap: 0;
+    /* Remove gap, merge input and button */
+    flex: 0 1 400px;
+    /* Don't shrink too much, grow to 400px */
+    max-width: 450px;
+    margin-left: auto;
+    /* Push to the right */
+    background: #f5f5f5;
+    border-radius: 30px;
+    padding: 4px;
+    border: 1px solid #eee;
 }
 
 .nav-search input {
     flex: 1;
-    padding: 6px 12px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 30px;
+    border: none;
+    /* Remove border as container has it */
     font-size: 0.95rem;
+    background: transparent;
+    outline: none;
 }
 
 .nav-search button {
-    padding: 6px 14px;
+    padding: 8px 20px;
     border: none;
-    border-radius: 20px;
-    background: #333;
+    border-radius: 30px;
+    background: #222;
     color: #fff;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 500;
+    font-size: 14px;
+    margin-left: 5px;
+    /* Tiny gap */
+    transition: transform 0.2s, background 0.2s;
 }
 
 .nav-search button:hover {
-    background: #555;
+    background: #000;
+    transform: scale(1.05);
 }
 
 /* Nav actions: login link and profile */
@@ -651,7 +685,6 @@ footer {
    =========================== */
 .bottom-nav {
     display: none !important;
-    /* Force hide on desktop */
 }
 
 /* ===========================

@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="hamburger.css">
+    <link rel="stylesheet" href="style.css?v=5" />
     <link rel="stylesheet" href="product.css">
 </head>
 
@@ -35,7 +34,6 @@
         </form>
         <!-- Nav Icons (Cart/Wishlist) -->
         <div class="nav-icons">
-
             <a href="cart.html" class="nav-icon" aria-label="Cart">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -46,7 +44,6 @@
                 <span id="cart-count" class="badge">0</span>
             </a>
         </div>
-
         <div id="auth-buttons" class="auth-buttons">
             <a href="login.html" class="sign-in-link">Sign In</a>
             <button class="sign-up-btn" onclick="window.location.href='login.html#register'">Sign Up</button>
@@ -91,14 +88,28 @@
             <br>
 
             <!-- Hidden product-card wrapper for cart functionality -->
-            <div id="product-card-wrapper" class="inline-block">
-                <img class="hidden">
-                <h3 class="hidden"></h3>
-                <span class="price hidden"></span>
-                <button id="add-cart-btn" class="buynow">Add to Cart</button>
-                <button id="wishlist-btn" class="wishlist-btn" title="Add to Wishlist" onclick="toggleWishlist(this)">
-                    &#x2764; <!-- Heart Entity -->
-                </button>
+            <!-- Product Actions Wrapper -->
+            <div id="product-card-wrapper" class="product-actions">
+                <!-- Data for JS (Hidden) -->
+                <div class="hidden-data" style="display:none;">
+                    <img class="hidden">
+                    <h3 class="hidden"></h3>
+                    <span class="price hidden"></span>
+                </div>
+
+                <!-- Visible Buttons -->
+                <div class="action-buttons">
+                    <button id="add-cart-btn" class="buynow">Add to Cart</button>
+                    <button id="wishlist-btn" class="wishlist-btn" title="Add to Wishlist" type="button"
+                        aria-label="Add to Wishlist">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </main>

@@ -70,8 +70,8 @@
 
         .cart-item {
             display: grid;
-            /* Fixed width for image (180px) + gap + details + actions */
-            grid-template-columns: 80px 1fr auto;
+            /* Fixed width for image (150px) + gap + details + actions */
+            grid-template-columns: 150px 1fr auto;
             gap: 2rem;
             padding: 2rem 0;
             border-bottom: 1px solid var(--border-color);
@@ -84,8 +84,8 @@
         }
 
         .cart-item img {
-            width: 80px;
-            height: 80px;
+            width: 150px;
+            height: 150px;
             object-fit: cover;
             border-radius: 12px;
             background-color: #f0f0f0;
@@ -353,7 +353,7 @@
         </div>
 
         <div id="profile" class="hidden">
-            <button id="profile-btn" aria-haspopup="true" aria-expanded="false">👤</button>
+            <button id="profile-btn" onclick="window.location.href='account.html'" aria-label="My Account">👤</button>
             <div id="profile-menu" class="profile-menu hidden">
                 <p id="profile-name"></p>
                 <button id="edit-details">Edit details</button>
@@ -444,22 +444,23 @@
     <script src="cart.js"></script>
     <script src="operation.js"></script>
     <script>
-        // Sync cart count on load
+        // Inline fallback to ensure UI updates immediately on load
         document.addEventListener("DOMContentLoaded", () => {
-            if (typeof syncCartCountFromServer === 'function') {
-                syncCartCountFromServer();
-            }
-            // Ensure login state is checked effectively
-            if (typeof checkLoginState === 'function') {
-                checkLoginState();
-            } else {
-                // Fallback if operation.js hasn't loaded yet or function missing
+            try {
                 const user = localStorage.getItem("user");
                 if (user) {
-                    document.getElementById("auth-buttons").classList.add("hidden");
-                    document.getElementById("profile").classList.remove("hidden");
-                    document.getElementById("profile-name").textContent = JSON.parse(user).name;
+                    const authBtns = document.getElementById("auth-buttons");
+                    const profile = document.getElementById("profile");
+                    const profileName = document.getElementById("profile-name");
+
+                    if (authBtns) authBtns.classList.add("hidden");
+                    if (profile) profile.classList.remove("hidden");
+
+                    const u = JSON.parse(user);
+                    if (profileName) profileName.textContent = u.name || "User";
                 }
+            } catch (e) {
+                console.error("Auth UI fallback error", e);
             }
         });
     </script>

@@ -103,43 +103,21 @@ document.addEventListener("DOMContentLoaded", () => {
         const exists = wishlist.some(item => String(item.id) === String(productId));
         if (exists) {
             wishlistBtn.classList.add("active");
-            wishlistBtn.innerHTML = "&#x2764;"; // Filled Heart (using same entity but styling toggles color)
         } else {
             wishlistBtn.classList.remove("active");
-            wishlistBtn.innerHTML = "&#x2764;";
         }
     }
 
     // Toggle logic
-    wishlistBtn.addEventListener("click", async () => {
-        // Collect product details from DOM
-        const name = document.getElementById("product-name").textContent;
-        const price = document.getElementById("product-price").textContent;
-        const img = document.getElementById("product-img").src;
-
-        let wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
-        const index = wishlist.findIndex(item => String(item.id) === String(productId));
-
-        if (index > -1) {
-            // Remove
-            wishlist.splice(index, 1);
-            showNotification ? showNotification("Removed from Wishlist", "error") : alert("Removed from Wishlist");
-            wishlistBtn.classList.remove("active");
-        } else {
-            // Add
-            wishlist.push({
-                id: productId,
-                name: name,
-                price: price,
-                img: img
-            });
-            showNotification ? showNotification("Added to Wishlist", "success") : alert("Added to Wishlist");
-            wishlistBtn.classList.add("active");
-        }
-
-        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    wishlistBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleWishlist(wishlistBtn);
     });
 
-    // Check status on load (delay slightly to ensure product loaded? Actually resolveProduct runs independently, so we just check ID match)
-    checkWishlist();
+    // Check status on load
+    if (productId && wishlistBtn) {
+        // console.log("Checking wishlist status for:", productId);
+        checkWishlist();
+        wishlistBtn.style.display = 'flex'; // Force visibility via JS as a failsafe
+    }
 });

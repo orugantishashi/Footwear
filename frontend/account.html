@@ -8,6 +8,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=5">
 
     <style>
         :root {
@@ -64,9 +65,12 @@
 
         /* ================= ACCOUNT PAGE ================= */
         .account-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            width: 100%;
+            max-width: 1000px;
+            /* Increased from 800px */
+            margin: 3rem auto;
+            /* More breathing room */
+            padding: 0 2rem;
         }
 
         .account-header-card {
@@ -125,28 +129,39 @@
 
         /* ================= ACTIONS ================= */
         .account-actions {
-            background: var(--card);
-            border-radius: 14px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
+            background: transparent;
+            box-shadow: none;
+            border-radius: 0;
+            overflow: visible;
+            display: grid;
+            grid-template-columns: 1fr;
+            /* Force single column */
+            gap: 20px;
         }
 
         .action-btn {
             width: 100%;
-            background: none;
+            background: var(--card);
             border: none;
-            padding: 1.5rem 1.2rem;
-            /* Initial increase, will be adjusted by CSS below */
-            padding: 20px;
-            /* Big button size */
+            border-radius: 16px;
+            padding: 25px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            font-size: 1rem;
-            border-bottom: 1px solid var(--border);
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
+        .action-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            background-color: #fff;
+        }
+
+        /* Remove the old border logic */
         .action-btn:last-child {
             border-bottom: none;
         }
@@ -248,7 +263,9 @@
 
     <!-- NAVBAR -->
     <nav>
-        <h1>Foot Mart</h1>
+        <a href="index.html" style="text-decoration: none;">
+            <h1>Foot Mart</h1>
+        </a>
     </nav>
 
     <!-- ACCOUNT -->
@@ -272,7 +289,7 @@
                     <span>›</span>
                 </button>
 
-                <button class="action-btn" onclick="window.location.href='login.html#change-password'">
+                <button class="action-btn" onclick="showChangePassword()">
                     <div class="action-icon">
                         <span>🔒</span> Change Password
                     </div>
@@ -291,6 +308,47 @@
                         <span>🚪</span> Logout
                     </div>
                 </button>
+            </div>
+        </div>
+
+        <!-- CHANGE PASSWORD SECTION -->
+        <div id="account-change-password" class="hidden">
+            <div class="account-header-card">
+                <h2>Change Password</h2>
+                <p>Update your password to keep your account secure.</p>
+
+                <div style="width: 100%; max-width: 400px; text-align: left; margin-top: 20px;">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="cpemail" style="display: block; margin-bottom: 5px; font-weight: 500;">Email</label>
+                        <input type="email" id="cpemail" placeholder="Confirm your email"
+                            style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"
+                            readonly>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="oldpassword" style="display: block; margin-bottom: 5px; font-weight: 500;">Current
+                            Password</label>
+                        <input type="password" id="oldpassword" placeholder="Enter current password"
+                            style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="newpassword" style="display: block; margin-bottom: 5px; font-weight: 500;">New
+                            Password</label>
+                        <input type="password" id="newpassword" placeholder="Enter new password"
+                            style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;">
+                    </div>
+
+                    <p id="change-pass-error"
+                        style="color: red; display: none; margin-bottom: 15px; font-size: 0.9rem;"></p>
+
+                    <button onclick="changePassword()"
+                        style="width: 100%; padding: 14px; background: #1a1a1a; color: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer;">Update
+                        Password</button>
+
+                    <button onclick="hideChangePassword()"
+                        style="width: 100%; padding: 14px; background: transparent; color: #666; border: none; margin-top: 10px; cursor: pointer;">Cancel</button>
+                </div>
             </div>
         </div>
 
@@ -360,6 +418,28 @@
                 logoutBtn.onclick = logout;
             }
         });
+
+        function showChangePassword() {
+            const userJson = localStorage.getItem("user");
+            if (userJson) {
+                const user = JSON.parse(userJson);
+                const emailField = document.getElementById("cpemail");
+                if (emailField) emailField.value = user.email || "";
+            }
+
+            document.getElementById("account-logged-in").classList.add("hidden");
+            document.getElementById("account-change-password").classList.remove("hidden");
+        }
+
+        function hideChangePassword() {
+            document.getElementById("account-change-password").classList.add("hidden");
+            document.getElementById("account-logged-in").classList.remove("hidden");
+
+            // Clear fields (optional)
+            document.getElementById("oldpassword").value = "";
+            document.getElementById("newpassword").value = "";
+            document.getElementById("change-pass-error").style.display = "none";
+        }
     </script>
 
 </body>

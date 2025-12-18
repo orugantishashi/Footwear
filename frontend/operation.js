@@ -209,6 +209,7 @@ function toggleWishlist(btn) {
     let name = card.querySelector("h3")?.textContent.trim();
     let priceText = card.querySelector(".price")?.textContent.trim();
     let img = card.querySelector("img")?.getAttribute("data-src") || card.querySelector("img")?.src;
+    // Fix: extract numeric price correctly from "₹5097" or "5097"
     let price = parseInt(priceText?.replace(/[^0-9]/g, "") || "0", 10);
 
     // Handle Product Page special case
@@ -217,7 +218,6 @@ function toggleWishlist(btn) {
         id = params.get("id");
         name = document.getElementById("product-name")?.textContent.trim();
         priceText = document.getElementById("product-price")?.textContent.trim();
-        img = document.getElementById("product-img")?.src;
         price = parseInt(priceText?.replace(/[^0-9]/g, "") || "0", 10);
     }
 
@@ -739,9 +739,6 @@ async function loadCategoryProducts(category) {
             const placeholder = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
             card.innerHTML = `
-                <button class="wishlist-btn ${isWishlisted(product.id) ? 'active' : ''}" 
-                    onclick="event.stopPropagation(); toggleWishlist(this)" 
-                    aria-label="Wishlist">❤</button>
                 <img 
                     src="${placeholder}" 
                     data-src="${imgPath}" 
@@ -829,17 +826,101 @@ async function changePassword() {
     }
 }
 
+// ------------------ AUTH VIEW SWITCHING ------------------
+function showRegister() {
+    document.getElementById('login-box')?.classList.add('hidden');
+    document.getElementById('register-box')?.classList.remove('hidden');
+    document.getElementById('change-pass-box')?.classList.add('hidden');
+    document.getElementById('forgot-box')?.classList.add('hidden'); // Ensure forgot box hidden
+}
+
+function showLogin() {
+    document.getElementById('register-box')?.classList.add('hidden');
+    document.getElementById('login-box')?.classList.remove('hidden');
+    document.getElementById('change-pass-box')?.classList.add('hidden');
+    document.getElementById('forgot-box')?.classList.add('hidden');
+}
+
+function showForgot() {
+    document.getElementById('login-box')?.classList.add('hidden');
+    document.getElementById('register-box')?.classList.add('hidden');
+    document.getElementById('change-pass-box')?.classList.add('hidden');
+    document.getElementById('forgot-box')?.classList.remove('hidden');
+}
+
+// ------------------ FORGOT PASSWORD LOGIC ------------------
+async function handleForgotPassword() {
+    const emailInput = document.getElementById("femail");
+    const newPassInput = document.getElementById("fnewpassword");
+    const errorElement = document.getElementById("forgot-error");
+
+    const email = emailInput?.value.trim();
+    const newPassword = newPassInput?.value.trim();
+
+    if (errorElement) {
+        errorElement.textContent = "";
+        errorElement.style.display = "none";
+    }
+
+    if (!email || !newPassword) {
+        if (errorElement) {
+            errorElement.textContent = "Email and new password are required!";
+            errorElement.style.display = "block";
+            errorElement.style.color = "red";
+        }
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/reset-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, newPassword }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            const errorMsg = data.message || "Failed to reset password";
+            if (errorElement) {
+                errorElement.textContent = errorMsg;
+                errorElement.style.display = "block";
+                errorElement.style.color = "red";
+            }
+            return;
+        }
+
+        // Success
+        showNotification("Password reset successfully! Please login.", "success");
+
+        // Clear fields
+        if (emailInput) emailInput.value = "";
+        if (newPassInput) newPassInput.value = "";
+
+        showLogin();
+    } catch (err) {
+        console.error("Reset password error:", err);
+        if (errorElement) {
+            errorElement.textContent = "Server error. Please try again.";
+            errorElement.style.display = "block";
+            errorElement.style.color = "red";
+        }
+    }
+}
+
 // ------------------ HAMBURGER MENU TOGGLE & FORGOT PASSWORD ------------------
 document.addEventListener("DOMContentLoaded", () => {
     const hamburger = document.getElementById("hamburger");
     const navContent = document.getElementById("nav-content");
 
-    // Forgot Password Handler
+    // Forgot Password Handler (Legacy check removed or kept for compatibility if needed)
+    // We moved to onclick="showForgot()" in HTML
     const forgotPassLink = document.querySelector(".forgot-pass");
-    if (forgotPassLink) {
+    if (forgotPassLink && !forgotPassLink.getAttribute('onclick')) {
+        // Only attach if onclick wasn't set (though we set it in HTML now)
         forgotPassLink.addEventListener("click", (e) => {
             e.preventDefault();
-            alert("Forgot Password feature is coming soon!");
+            showForgot();
         });
     }
 

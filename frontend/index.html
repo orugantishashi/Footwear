@@ -31,10 +31,9 @@
   <meta property="twitter:image" content="./images/banners/mens banner.jpg">
 
   <link rel="stylesheet" href="style.css?v=5" />
-  <link rel="stylesheet" href="hamburger.css" />
 </head>
 
-<body>
+<body class="homepage">
   <nav>
     <h1>Foot Mart</h1>
     <div class="nav-content" id="nav-content">
@@ -50,7 +49,18 @@
       <button type="submit">Search</button>
     </form>
 
-
+    <!-- Nav Icons (Cart/Wishlist) -->
+    <div class="nav-icons">
+      <a href="cart.html" class="nav-icon" aria-label="Cart">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span id="cart-count" class="badge">0</span>
+      </a>
+    </div>
 
     <!---- Login Page-->
     <div id="auth-buttons" class="auth-buttons">
