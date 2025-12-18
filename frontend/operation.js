@@ -910,35 +910,6 @@ async function handleForgotPassword() {
 
 // ------------------ HAMBURGER MENU TOGGLE & FORGOT PASSWORD ------------------
 document.addEventListener("DOMContentLoaded", () => {
-    const hamburger = document.getElementById("hamburger");
-    const navContent = document.getElementById("nav-content");
-
-    // Forgot Password Handler (Legacy check removed or kept for compatibility if needed)
-    // We moved to onclick="showForgot()" in HTML
-    const forgotPassLink = document.querySelector(".forgot-pass");
-    if (forgotPassLink && !forgotPassLink.getAttribute('onclick')) {
-        // Only attach if onclick wasn't set (though we set it in HTML now)
-        forgotPassLink.addEventListener("click", (e) => {
-            e.preventDefault();
-            showForgot();
-        });
-    }
-
-    if (hamburger && navContent) {
-        hamburger.addEventListener("click", () => {
-            hamburger.classList.toggle("active");
-            navContent.classList.toggle("active");
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener("click", (e) => {
-            if (!hamburger.contains(e.target) && !navContent.contains(e.target)) {
-                hamburger.classList.remove("active");
-                navContent.classList.remove("active");
-            }
-        });
-    }
-
     // ------------------ PROFILE MENU HANDLERS ------------------
     const changePassBtn = document.getElementById("change-password");
     if (changePassBtn) {
@@ -1050,9 +1021,90 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Help & Support Modal
+    window.showHelpModal = function () {
+        // Remove existing modal if any
+        const existing = document.getElementById('help-modal');
+        if (existing) existing.remove();
+
+        const modalOverlay = document.createElement('div');
+        modalOverlay.id = 'help-modal';
+        modalOverlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+
+        const modalContent = document.createElement('div');
+        modalContent.style.cssText = `
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            position: relative;
+        `;
+
+        modalContent.innerHTML = `
+            <button onclick="document.getElementById('help-modal').classList.remove('active'); setTimeout(() => document.getElementById('help-modal').remove(), 300);" 
+                style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+            
+            <div style="font-size: 40px; margin-bottom: 15px;">🎧</div>
+            <h2 style="margin: 0 0 10px 0; color: #1a1a1a;">Help & Support</h2>
+            <p style="color: #666; margin-bottom: 25px;">We are here to help you with any questions.</p>
+            
+            <div style="text-align: left; background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 0;">
+                    <span style="font-size: 20px;">📧</span>
+                    <div>
+                        <div style="font-size: 12px; color: #888; font-weight: 500;">Email Us</div>
+                        <a href="mailto:support@footmart.com" style="color: #1a1a1a; text-decoration: none; font-weight: 600;">support@footmart.com</a>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="document.getElementById('help-modal').classList.remove('active'); setTimeout(() => document.getElementById('help-modal').remove(), 300);"
+                style="background: #1a1a1a; color: white; width: 100%; padding: 12px; border-radius: 30px; border: none; font-weight: 600; cursor: pointer; margin-top: 10px;">Close</button>
+        `;
+
+        modalOverlay.appendChild(modalContent);
+        document.body.appendChild(modalOverlay);
+
+        // Trigger animation
+        requestAnimationFrame(() => {
+            modalOverlay.classList.add('active');
+            modalOverlay.style.opacity = '1';
+            modalContent.style.transform = 'translateY(0)';
+        });
+    };
+
     if (drawerHelpBtn) {
-        drawerHelpBtn.addEventListener("click", () => {
-            alert("For support, please email us at support@footmart.com or call 1-800-FOOTMART.");
+        drawerHelpBtn.addEventListener("click", (e) => {
+            e.preventDefault(); // Prevent accidental navigation if it was a link
+            showHelpModal();
+            // Close drawer if open
+            if (typeof closeDrawer === 'function') closeDrawer(); // Assuming closeDrawer is in scope or we need to access it differently. 
+            // Since closeDrawer is defined inside the DOMContentLoaded block above, it's not directly accessible here unless we move this logic or duplication.
+            // Actually, this block IS inside DOMContentLoaded in the original file (line 979). 
+            // So closeDrawer IS accessible.
+            const drawer = document.getElementById("mobile-account-drawer");
+            const overlay = document.getElementById("drawer-overlay");
+            if (drawer) drawer.classList.remove("active");
+            if (overlay) overlay.classList.remove("active");
+            document.body.style.overflow = "";
         });
     }
 

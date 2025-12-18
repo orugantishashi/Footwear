@@ -697,7 +697,8 @@ footer {
     #profile,
     .toggle,
     .nav-search,
-    .nav-icons {
+    .nav-icons,
+    .nav-content {
         display: none !important;
     }
 
@@ -759,13 +760,7 @@ footer {
     }
 
     /* Hamburger on the Right */
-    .hamburger {
-        display: block;
-        position: static;
-        transform: none;
-        margin-left: 10px;
-        order: 4;
-    }
+
 
     /* --- Banner --- */
     .banner {
