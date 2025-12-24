@@ -135,6 +135,13 @@ nav h1 {
     margin-right: 10px;
 }
 
+.nav-logo {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
 nav ul {
     list-style: none;
     display: flex;
