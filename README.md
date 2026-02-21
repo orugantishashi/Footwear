@@ -43,7 +43,7 @@ Tools:
 
 ## 📚 What I Learned
 
-- Full-stack project structure
+- MERN-stack project structure
 - API integration
 - DOM manipulation
 - Backend development basics
