@@ -1,10 +1,9 @@
-# 👟 Footwear E-Commerce Web Application
+#  Footwear E-Commerce Web Application
 
 A full-stack footwear shopping web application built using HTML, CSS, JavaScript and Node.js.
 
----
 
-## 🚀 Features
+##  Features
 
 - Responsive user interface
 - Product listing page
@@ -14,9 +13,8 @@ A full-stack footwear shopping web application built using HTML, CSS, JavaScript
 - Password change feature
 - Backend server using Node.js
 
----
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 Frontend:
 - HTML
@@ -32,16 +30,14 @@ Tools:
 - GitHub
 - VS Code
 
----
 
-## 📂 Project Structure
+##  Project Structure
 
 - frontend/ → UI files
 - backend/ → Server and APIs
 
----
 
-## 📚 What I Learned
+##  What I Learned
 
 - MERN-stack project structure
 - API integration
@@ -49,9 +45,8 @@ Tools:
 - Backend development basics
 - Version control using Git
 
----
 
-## 👨‍💻 Author
+##  Author
 
 Shashi Kumar  
 Aspiring MERN-Stack Developer
