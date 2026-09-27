@@ -4,7 +4,9 @@ require("dotenv").config();
 const { MongoClient } = require("mongodb");
 const cors = require("cors");
 const path = require("path");
-const fetch = require("node-fetch");
+const fs = require("fs");
+const connectMongoose = require("./db/db config.js");
+const Product = require("./db/dataSchema.js");
 
 // ==================== APP SETUP ====================
 const app = express();
@@ -15,16 +17,14 @@ app.disable('x-powered-by');
 app.use(cors({ origin: "*", methods: "GET,POST,PUT,DELETE", allowedHeaders: "Content-Type" }));
 app.use(express.json());
 
-// Serve frontend files (go up to html-css-project2 directory)
-app.use(express.static(path.join(__dirname, "../frontend"), {
-    maxAge: '0', // Disable cache for dev
-    setHeaders: (res, path) => {
-        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-        res.setHeader('Surrogate-Control', 'no-store');
-    }
-}));
+// Serve frontend built files (dist) & static assets
+const distPath = path.join(__dirname, "../frontend/dist");
+const frontendPath = path.join(__dirname, "../frontend");
+
+if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+}
+app.use(express.static(frontendPath));
 
 
 // Request logging middleware
@@ -115,6 +115,142 @@ app.post("/register", async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 });
+
+// ==================== GET PRODUCTS ====================
+app.get("/api/getproduct", async (req, res) => {
+    try {
+        const { category } = req.query;
+        const query = category ? { category: category.toLowerCase() } : {};
+        const productsData = await Product.find(query);
+        res.json({ success: true, products: productsData });
+    } catch (err) {
+        console.error("Error fetching products:", err);
+        res.status(500).json({ success: false, message: "Error fetching products" });
+    }
+});
+
+// GET Single Product by ID
+app.get("/api/products/:id", async (req, res) => {
+    try {
+        const productId = parseInt(req.params.id);
+        let product = await Product.findOne({ id: productId });
+        if (!product) {
+            // fallback to mongoose _id if not numeric id
+            product = await Product.findById(req.params.id).catch(() => null);
+        }
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+        res.json({ success: true, product });
+    } catch (err) {
+        console.error("Error fetching product details:", err);
+        res.status(500).json({ success: false, message: "Error fetching product details" });
+    }
+});
+
+// ==================== AI SEARCH ENDPOINT ====================
+app.get("/api/ai-search", async (req, res) => {
+    try {
+        const queryStr = req.query.q || "";
+        if (!queryStr.trim()) {
+            const allProducts = await Product.find({});
+            return res.json({ success: true, products: allProducts, isAi: true, aiExplanation: "Showing all items." });
+        }
+
+        const apiKey = process.env.AI_API_KEY;
+        const apiUrl = process.env.AI_API_URL;
+
+        let aiExplanation = "";
+        let filter = {};
+
+        // If AI API Key and URL are provided by user
+        if (apiKey && apiKey !== "PASTE_YOUR_AI_API_KEY_HERE" && apiUrl && apiUrl !== "PASTE_YOUR_AI_API_URL_HERE") {
+            try {
+                const fetchUrl = apiUrl.includes('key=') ? apiUrl : `${apiUrl}?key=${apiKey}`;
+                const aiResponse = await fetch(fetchUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-goog-api-key': apiKey
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `Parse this footwear query into JSON: {"category": "mens"|"womens"|"kids"|null, "maxPrice": number|null}. Query: "${queryStr}"`
+                            }]
+                        }]
+                    })
+                });
+
+                if (aiResponse.ok) {
+                    const aiData = await aiResponse.json();
+                    const textResp = aiData?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                    const jsonMatch = textResp.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        const parsed = JSON.parse(jsonMatch[0]);
+                        if (parsed.category) filter.category = parsed.category.toLowerCase();
+                        if (parsed.maxPrice) filter.price = { $lte: Number(parsed.maxPrice) };
+                        aiExplanation = `✨ Google Gemini AI processed: "${queryStr}"`;
+                    }
+                }
+            } catch (aiErr) {
+                console.error("Gemini AI API call error:", aiErr);
+            }
+        }
+
+        // Smart Natural Language Fallback / Parser
+        const lowerQ = queryStr.toLowerCase();
+
+        // 1. Detect Category
+        if (lowerQ.includes('men') || lowerQ.includes('boy') || lowerQ.includes('gent')) {
+            if (!lowerQ.includes('women')) filter.category = 'mens';
+        }
+        if (lowerQ.includes('women') || lowerQ.includes('girl') || lowerQ.includes('lady') || lowerQ.includes('ladies')) {
+            filter.category = 'womens';
+        }
+        if (lowerQ.includes('kid') || lowerQ.includes('child') || lowerQ.includes('baby') || lowerQ.includes('toddler')) {
+            filter.category = 'kids';
+        }
+
+        // 2. Detect Max Price (e.g. "under 2000", "below 1500", "< 3000")
+        const priceMatch = lowerQ.match(/(?:under|below|less than|<|budget of)\s*₹?\s*(\d+)/i);
+        if (priceMatch && priceMatch[1]) {
+            filter.price = { $lte: parseFloat(priceMatch[1]) };
+        }
+
+        // 3. Keyword Search across name, description, brand, color
+        const words = lowerQ
+            .replace(/(?:under|below|less than|shoes|footwear|for|in|mens|womens|kids|under|cheap|best)\s*₹?\d*/gi, '')
+            .trim()
+            .split(/\s+/)
+            .filter(w => w.length > 2);
+
+        let products = await Product.find(filter);
+
+        if (words.length > 0) {
+            products = products.filter(p => {
+                const text = `${p.name} ${p.description} ${p.category} ${p.brand || ''} ${p.color || ''}`.toLowerCase();
+                return words.some(w => text.includes(w));
+            });
+        }
+
+        if (!aiExplanation) {
+            aiExplanation = `✨ AI analyzed your query "${queryStr}" and found ${products.length} matching footwear options.`;
+        }
+
+        res.json({
+            success: true,
+            products,
+            isAi: true,
+            query: queryStr,
+            aiExplanation
+        });
+    } catch (err) {
+        console.error("AI Search error:", err);
+        res.status(500).json({ success: false, message: "Error performing AI Search" });
+    }
+});
+
 
 // ==================== LOGIN ====================
 app.post("/login", async (req, res) => {
@@ -304,28 +440,26 @@ app.post("/cart/clear", async (req, res) => {
     }
 });
 
-// ==================== NIKE API PROXY (THIS FIXES CORS) ====================
-app.get("/nike", async (req, res) => {
-    try {
-        const keyword = req.query.search || "running";
 
-        const url = `https://api.nike.com/product_feed/threads/v2?filter=marketplace(IN)&filter=language(en)&anchor=0&count=48&filter=searchTerms(${keyword})&timestamp=${Date.now()}`;
 
-        const nikeRes = await fetch(url, { headers: { Accept: "application/json" } });
 
-        const data = await nikeRes.json();
-
-        res.json(data);
-    } catch (err) {
-        res.status(500).json({ error: "Nike API failed", details: err.message });
+// ==================== SPA FALLBACK ROUTE ====================
+app.use((req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/login') || req.path.startsWith('/register') || req.path.startsWith('/cart')) {
+        return next();
     }
+    const distIndex = path.join(__dirname, "../frontend/dist/index.html");
+    if (fs.existsSync(distIndex)) {
+        return res.sendFile(distIndex);
+    }
+    res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
-
 
 // ==================== START SERVER ====================
 async function startServer() {
     try {
         await connectDB();
+        await connectMongoose();
 
         const PORT = 3000;
         app.listen(PORT, () =>
