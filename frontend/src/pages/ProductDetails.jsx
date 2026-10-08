@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { getProductById, formatImgSrc } from '../utils/api.js';
 
 export default function ProductDetails({ onAddToCart, onToggleWishlist, wishlist = [] }) {
   const { id } = useParams();
@@ -11,43 +12,55 @@ export default function ProductDetails({ onAddToCart, onToggleWishlist, wishlist
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isMounted = true;
     setLoading(true);
-    fetch(`/api/products/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.product) {
-          setProduct(data.product);
-        } else {
-          setProduct(null);
+
+    getProductById(id)
+      .then(item => {
+        if (isMounted) {
+          setProduct(item || null);
+          setLoading(false);
         }
-        setLoading(false);
       })
       .catch(err => {
         console.error("Error fetching product details:", err);
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   if (loading) {
-    return <div style={{ textAlign: 'center', padding: '80px', fontSize: '1.2rem' }}>Loading product details from database...</div>;
+    return (
+      <div style={{ textAlign: 'center', padding: '100px 20px', fontSize: '1.2rem', color: '#666' }}>
+        <div style={{ display: 'inline-block', width: '36px', height: '36px', border: '4px solid #eee', borderTopColor: '#0070f3', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '12px' }}></div>
+        <div>Loading footwear details...</div>
+      </div>
+    );
   }
 
   if (!product) {
     return (
-      <div style={{ textAlign: 'center', padding: '80px' }}>
-        <h2>Product Not Found</h2>
-        <p style={{ margin: '16px 0' }}>The product you are looking for does not exist.</p>
-        <Link to="/" style={{ color: '#0070f3', textDecoration: 'underline' }}>Back to Home</Link>
+      <div style={{ textAlign: 'center', padding: '80px 20px', maxWidth: '600px', margin: '40px auto', background: '#fff', borderRadius: '16px', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
+        <h2 style={{ fontSize: '1.8rem', color: '#111' }}>Product Not Found</h2>
+        <p style={{ margin: '16px 0', color: '#666' }}>The product you are looking for is currently unavailable or does not exist.</p>
+        <Link to="/" style={{ display: 'inline-block', padding: '12px 24px', backgroundColor: '#0070f3', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold' }}>
+          Back to Home
+        </Link>
       </div>
     );
   }
 
   const isWishlisted = wishlist.some(item => item.id === product.id);
-  const imgSrc = product.image ? (product.image.startsWith('http') || product.image.startsWith('/') ? product.image : `/${product.image}`) : '/images/banners/mens one.webp';
+  const imgSrc = formatImgSrc(product.image);
 
   const handleAddToCart = () => {
     onAddToCart(product, selectedSize, quantity);
-    setAddedMessage('Added to cart successfully!');
+    setAddedMessage('✓ Added to cart successfully!');
     setTimeout(() => setAddedMessage(''), 3000);
   };
 
@@ -55,23 +68,26 @@ export default function ProductDetails({ onAddToCart, onToggleWishlist, wishlist
     <div style={{ maxWidth: '1100px', margin: '40px auto', padding: '0 20px', minHeight: '75vh' }}>
       <button
         onClick={() => navigate(-1)}
-        style={{ marginBottom: '20px', background: 'none', border: 'none', color: '#0070f3', cursor: 'pointer', fontSize: '1rem' }}
+        style={{ marginBottom: '20px', background: 'none', border: 'none', color: '#0070f3', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' }}
       >
         &larr; Back
       </button>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px', background: '#fff', padding: '30px', borderRadius: '16px', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
-        <div>
+        <div style={{ textAlign: 'center' }}>
           <img
             src={imgSrc}
             alt={product.name}
-            style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '450px' }}
+            onError={(e) => { e.target.onerror = null; e.target.src = '/images/banners/mens one.webp'; }}
+            style={{ width: '100%', borderRadius: '12px', objectFit: 'cover', maxHeight: '450px', backgroundColor: '#f8f9fa' }}
           />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
-            <span style={{ fontSize: '0.85rem', color: '#888', textTransform: 'uppercase', letterSpacing: '1px' }}>{product.category}</span>
+            <span style={{ fontSize: '0.85rem', color: '#0070f3', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              {product.category} Footwear
+            </span>
             <h1 style={{ fontSize: '2rem', margin: '8px 0 12px', color: '#111' }}>{product.name}</h1>
             <p style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#0070f3', marginBottom: '20px' }}>₹{product.price}</p>
             <p style={{ fontSize: '1rem', color: '#555', lineHeight: '1.6', marginBottom: '24px' }}>{product.description}</p>
@@ -79,14 +95,14 @@ export default function ProductDetails({ onAddToCart, onToggleWishlist, wishlist
             {/* Size Selector */}
             <div style={{ marginBottom: '24px' }}>
               <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Select Size (UK):</label>
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 {['6', '7', '8', '9', '10', '11'].map(size => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     style={{
-                      width: '42px',
-                      height: '42px',
+                      width: '44px',
+                      height: '44px',
                       borderRadius: '8px',
                       border: selectedSize === size ? '2px solid #0070f3' : '1px solid #ddd',
                       backgroundColor: selectedSize === size ? '#0070f3' : '#fff',
@@ -138,7 +154,7 @@ export default function ProductDetails({ onAddToCart, onToggleWishlist, wishlist
             <button
               onClick={() => onToggleWishlist(product)}
               style={{ padding: '14px 20px', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '8px', cursor: 'pointer', fontSize: '1.2rem' }}
-              title="Wishlist"
+              title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
             >
               {isWishlisted ? '❤️' : '🤍'}
             </button>

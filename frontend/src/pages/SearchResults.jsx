@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-
-const formatImgSrc = (img) => {
-  if (!img) return '/images/banners/mens one.webp';
-  if (img.startsWith('http') || img.startsWith('/images/')) return img;
-  if (img.startsWith('compressed_by_category')) return `/images/${img}`;
-  return `/images/${img.replace(/^\/+/, '')}`;
-};
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { searchProducts, formatImgSrc } from '../utils/api.js';
 
 export default function SearchResults({ onAddToCart, onToggleWishlist, wishlist = [] }) {
   const [searchParams] = useSearchParams();
@@ -19,60 +13,66 @@ export default function SearchResults({ onAddToCart, onToggleWishlist, wishlist 
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isMounted = true;
     setLoading(true);
     setAiExplanation('');
 
-    const endpoint = isAiSearch
-      ? `/api/ai-search?q=${encodeURIComponent(query)}`
-      : `/api/getproduct`;
-
-    fetch(endpoint)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && Array.isArray(data.products)) {
-          if (isAiSearch) {
-            setProducts(data.products);
-            setAiExplanation(data.aiExplanation || `✨ AI matched ${data.products.length} products.`);
-          } else {
-            const filtered = data.products.filter(item =>
-              item.name.toLowerCase().includes(query.toLowerCase()) ||
-              item.category.toLowerCase().includes(query.toLowerCase()) ||
-              (item.description && item.description.toLowerCase().includes(query.toLowerCase()))
-            );
-            setProducts(filtered);
+    searchProducts(query, isAiSearch)
+      .then(result => {
+        if (isMounted) {
+          setProducts(result.products || []);
+          if (result.aiExplanation) {
+            setAiExplanation(result.aiExplanation);
           }
-        } else {
-          setProducts([]);
+          setLoading(false);
         }
-        setLoading(false);
       })
       .catch(err => {
         console.error("Error performing search:", err);
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [query, isAiSearch]);
 
   return (
-    <div style={{ minHeight: '80vh', padding: '20px 4%' }}>
+    <div style={{ minHeight: '80vh', padding: '24px 4%', maxWidth: '1400px', margin: '0 auto' }}>
       <div style={{ marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '0.9rem', color: '#666' }}>
+          <Link to="/" style={{ color: '#0070f3', textDecoration: 'none' }}>Home</Link>
+          <span>/</span>
+          <span>Search</span>
+        </div>
+
         <h2 className="title" style={{ margin: '0 0 8px 0' }}>
-          {isAiSearch ? 'AI Smart Search' : 'Search Results'} for "{query}"
+          {isAiSearch ? '✨ AI Smart Search' : 'Search Results'} {query ? `for "${query}"` : ''}
         </h2>
 
         {isAiSearch && aiExplanation && (
-          <div style={{ display: 'inline-block', padding: '10px 16px', background: 'linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 100%)', color: '#4c1d95', borderRadius: '10px', fontSize: '0.95rem', border: '1px solid #c084fc', fontWeight: '500', margin: '8px 0' }}>
+          <div style={{ display: 'inline-block', padding: '10px 18px', background: 'linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 100%)', color: '#4c1d95', borderRadius: '10px', fontSize: '0.95rem', border: '1px solid #c084fc', fontWeight: '500', margin: '8px 0' }}>
             {aiExplanation}
           </div>
         )}
       </div>
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '60px', fontSize: '1.2rem', color: '#666' }}>
-          {isAiSearch ? '✨ AI is analyzing your search query & scanning catalog...' : 'Searching database...'}
+        <div style={{ textAlign: 'center', padding: '80px 20px', fontSize: '1.2rem', color: '#666' }}>
+          <div style={{ display: 'inline-block', width: '36px', height: '36px', border: '4px solid #eee', borderTopColor: '#0070f3', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '12px' }}></div>
+          <div>{isAiSearch ? '✨ AI is analyzing your search query & scanning catalog...' : 'Searching database...'}</div>
         </div>
       ) : products.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '60px', fontSize: '1.1rem', color: '#888' }}>
-          No shoes found matching "{query}". Try a broader term like "Running shoes", "Men", or "Sandals".
+        <div style={{ textAlign: 'center', padding: '80px 20px', fontSize: '1.1rem', color: '#888', background: '#fff', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+          <h3>No shoes found matching "{query}".</h3>
+          <p style={{ marginTop: '8px' }}>Try searching with keywords like "Men running", "Women heels", "Kids sneakers", or "shoes under 2000".</p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '16px' }}>
+            <Link to="/men" style={{ padding: '8px 16px', backgroundColor: '#f0f2f5', color: '#333', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>Men's</Link>
+            <Link to="/women" style={{ padding: '8px 16px', backgroundColor: '#f0f2f5', color: '#333', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>Women's</Link>
+            <Link to="/kids" style={{ padding: '8px 16px', backgroundColor: '#f0f2f5', color: '#333', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>Kids'</Link>
+          </div>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '24px' }}>
@@ -85,7 +85,7 @@ export default function SearchResults({ onAddToCart, onToggleWishlist, wishlist 
                 <button
                   onClick={() => onToggleWishlist(product)}
                   style={{ position: 'absolute', top: '12px', right: '12px', background: '#fff', border: 'none', borderRadius: '50%', width: '36px', height: '36px', cursor: 'pointer', boxShadow: '0 2px 6px rgba(0,0,0,0.15)', fontSize: '1.2rem', zIndex: 2 }}
-                  title="Wishlist"
+                  title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
                 >
                   {isWishlisted ? '❤️' : '🤍'}
                 </button>
@@ -95,20 +95,29 @@ export default function SearchResults({ onAddToCart, onToggleWishlist, wishlist 
                     src={imgSrc}
                     alt={product.name}
                     onError={(e) => { e.target.onerror = null; e.target.src = '/images/banners/mens one.webp'; }}
-                    style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px', marginBottom: '12px' }}
+                    loading="lazy"
+                    style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px', marginBottom: '12px', backgroundColor: '#f5f5f5' }}
                   />
                   <span style={{ fontSize: '0.8rem', color: '#888', textTransform: 'uppercase', letterSpacing: '1px' }}>{product.category}</span>
-                  <h4 style={{ fontSize: '1.1rem', margin: '6px 0', color: '#111' }}>{product.name}</h4>
-                  <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '12px', height: '40px', overflow: 'hidden' }}>{product.description}</p>
+                  <h4 style={{ fontSize: '1.05rem', margin: '6px 0', color: '#111' }}>{product.name}</h4>
+                  <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '12px', height: '36px', overflow: 'hidden' }}>{product.description}</p>
                   <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#0070f3', marginBottom: '12px' }}>₹{product.price}</p>
                 </div>
 
-                <button
-                  onClick={() => onAddToCart(product)}
-                  style={{ width: '100%', padding: '10px', backgroundColor: '#0070f3', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
-                >
-                  Add to Cart
-                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    onClick={() => onAddToCart(product)}
+                    style={{ flex: 1, padding: '10px', backgroundColor: '#0070f3', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
+                  >
+                    Add to Cart
+                  </button>
+                  <button
+                    onClick={() => navigate(`/product/${product.id}`)}
+                    style={{ padding: '10px 14px', backgroundColor: '#f0f0f0', color: '#333', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: '600' }}
+                  >
+                    View
+                  </button>
+                </div>
               </div>
             );
           })}

@@ -1,24 +1,31 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { formatImgSrc } from '../utils/api.js';
 
 export default function Wishlist({ wishlist, onToggleWishlist, onAddToCart }) {
   const navigate = useNavigate();
 
   return (
     <div style={{ maxWidth: '1100px', margin: '40px auto', padding: '0 20px', minHeight: '75vh' }}>
-      <h2 className="title" style={{ marginBottom: '24px' }}>My Wishlist</h2>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', fontSize: '0.9rem', color: '#666' }}>
+        <Link to="/" style={{ color: '#0070f3', textDecoration: 'none' }}>Home</Link>
+        <span>/</span>
+        <span>Wishlist</span>
+      </div>
+
+      <h2 className="title" style={{ marginBottom: '24px' }}>My Wishlist ({wishlist.length})</h2>
 
       {wishlist.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px', background: '#fff', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-          <p style={{ fontSize: '1.2rem', color: '#666', marginBottom: '20px' }}>Your wishlist is empty.</p>
-          <Link to="/" style={{ padding: '10px 20px', backgroundColor: '#0070f3', color: '#fff', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}>
-            Discover Shoes
+          <p style={{ fontSize: '1.2rem', color: '#666', marginBottom: '20px' }}>Your wishlist is currently empty.</p>
+          <Link to="/" style={{ padding: '12px 24px', backgroundColor: '#0070f3', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold' }}>
+            Discover Footwear
           </Link>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '24px' }}>
           {wishlist.map(product => {
-            const imgSrc = product.image ? (product.image.startsWith('http') || product.image.startsWith('/') ? product.image : `/${product.image}`) : '/images/banners/mens one.webp';
+            const imgSrc = formatImgSrc(product.image);
 
             return (
               <div key={product._id || product.id} style={{ background: '#fff', borderRadius: '12px', padding: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -34,7 +41,9 @@ export default function Wishlist({ wishlist, onToggleWishlist, onAddToCart }) {
                   <img
                     src={imgSrc}
                     alt={product.name}
-                    style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px', marginBottom: '12px' }}
+                    onError={(e) => { e.target.onerror = null; e.target.src = '/images/banners/mens one.webp'; }}
+                    loading="lazy"
+                    style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px', marginBottom: '12px', backgroundColor: '#f5f5f5' }}
                   />
                   <h4 style={{ fontSize: '1.1rem', margin: '6px 0', color: '#111' }}>{product.name}</h4>
                   <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#0070f3', marginBottom: '12px' }}>₹{product.price}</p>

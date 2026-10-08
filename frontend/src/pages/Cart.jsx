@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { formatImgSrc } from '../utils/api.js';
 
 export default function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClearCart, user }) {
   const [orderPlaced, setOrderPlaced] = useState(false);
@@ -21,7 +22,7 @@ export default function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClea
       <div style={{ maxWidth: '600px', margin: '60px auto', padding: '40px 20px', textAlign: 'center', background: '#fff', borderRadius: '16px', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
         <span style={{ fontSize: '4rem' }}>🎉</span>
         <h2 style={{ margin: '16px 0 8px', color: '#111' }}>Order Placed Successfully!</h2>
-        <p style={{ color: '#666', marginBottom: '24px' }}>Thank you for shopping with Foot Mart. Your footwear will be delivered soon.</p>
+        <p style={{ color: '#666', marginBottom: '24px' }}>Thank you for shopping with Foot Mart. Your footwear order has been confirmed.</p>
         <Link to="/" style={{ padding: '12px 24px', backgroundColor: '#0070f3', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold' }}>
           Continue Shopping
         </Link>
@@ -45,11 +46,17 @@ export default function Cart({ cartItems, onUpdateQuantity, onRemoveItem, onClea
           {/* Cart Items List */}
           <div className="cart-items-column">
             {cartItems.map(item => {
-              const imgSrc = item.img || item.image ? (item.img || item.image).startsWith('http') || (item.img || item.image).startsWith('/') ? (item.img || item.image) : `/${item.img || item.image}` : '/images/banners/mens one.webp';
+              const rawImg = item.img || item.image;
+              const imgSrc = formatImgSrc(rawImg);
 
               return (
                 <div key={item.id} className="cart-item-card">
-                  <img src={imgSrc} alt={item.name} className="cart-item-img" />
+                  <img
+                    src={imgSrc}
+                    alt={item.name}
+                    onError={(e) => { e.target.onerror = null; e.target.src = '/images/banners/mens one.webp'; }}
+                    className="cart-item-img"
+                  />
                   
                   <div className="cart-item-info">
                     <h4 className="cart-item-name">{item.name}</h4>

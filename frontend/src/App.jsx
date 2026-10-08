@@ -11,6 +11,7 @@ import Login from './pages/Login.jsx';
 import Wishlist from './pages/Wishlist.jsx';
 import Account from './pages/Account.jsx';
 import SearchResults from './pages/SearchResults.jsx';
+import { safeFetchJson } from './utils/api.js';
 
 export default function App() {
   const [user, setUser] = useState(() => {
@@ -61,14 +62,13 @@ export default function App() {
   // Fetch cart items from backend if user is logged in
   useEffect(() => {
     if (user && user.email) {
-      fetch(`/cart?email=${encodeURIComponent(user.email)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && Array.isArray(data.items)) {
-            setCartItems(data.items);
+      safeFetchJson(`/cart?email=${encodeURIComponent(user.email)}`)
+        .then(result => {
+          if (result.ok && result.data && Array.isArray(result.data.items)) {
+            setCartItems(result.data.items);
           }
         })
-        .catch(err => console.error("Error fetching cart:", err));
+        .catch(err => console.warn("Sync cart error:", err));
     }
   }, [user]);
 
@@ -88,7 +88,7 @@ export default function App() {
 
     // Also sync to backend if user logged in
     if (user && user.email) {
-      fetch('/add-to-cart', {
+      safeFetchJson('/add-to-cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -99,7 +99,7 @@ export default function App() {
           img: product.image,
           quantity
         })
-      }).catch(err => console.error("Error syncing cart to backend:", err));
+      }).catch(err => console.warn("Error syncing cart to backend:", err));
     }
   };
 
@@ -118,11 +118,11 @@ export default function App() {
     );
 
     if (user && user.email) {
-      fetch('/cart/update', {
+      safeFetchJson('/cart/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email, id, delta })
-      }).catch(err => console.error("Error updating cart quantity:", err));
+      }).catch(err => console.warn("Error updating cart quantity:", err));
     }
   };
 
@@ -130,11 +130,11 @@ export default function App() {
   const handleRemoveItem = (id) => {
     setCartItems(prev => prev.filter(item => item.id !== id));
     if (user && user.email) {
-      fetch('/cart/remove', {
+      safeFetchJson('/cart/remove', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email, id })
-      }).catch(err => console.error("Error removing cart item:", err));
+      }).catch(err => console.warn("Error removing cart item:", err));
     }
   };
 
@@ -142,11 +142,11 @@ export default function App() {
   const handleClearCart = () => {
     setCartItems([]);
     if (user && user.email) {
-      fetch('/cart/clear', {
+      safeFetchJson('/cart/clear', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email })
-      }).catch(err => console.error("Error clearing cart:", err));
+      }).catch(err => console.warn("Error clearing cart:", err));
     }
   };
 

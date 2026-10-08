@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import fallbackProducts from '../../data.json';
-
-const formatImgSrc = (img) => {
-  if (!img) return '/images/banners/mens one.webp';
-  if (img.startsWith('http') || img.startsWith('/images/')) return img;
-  if (img.startsWith('compressed_by_category')) return `/images/${img}`;
-  return `/images/${img.replace(/^\/+/, '')}`;
-};
+import { getProducts, formatImgSrc } from '../utils/api.js';
 
 export default function Home({ onAddToCart, onToggleWishlist, wishlist = [] }) {
   // Instant load using local fallback data to eliminate white screen / slow load
@@ -56,17 +50,18 @@ export default function Home({ onAddToCart, onToggleWishlist, wishlist = [] }) {
   ];
 
   useEffect(() => {
-    // Fetch live products from backend to stay in sync with DB
-    fetch('/api/getproduct')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
-          setProducts(data.products);
-        }
-      })
-      .catch(err => {
-        console.error("Error fetching live database products:", err);
-      });
+    let isMounted = true;
+    getProducts().then(items => {
+      if (isMounted && items && items.length > 0) {
+        setProducts(items);
+      }
+    }).catch(err => {
+      console.warn("Home products fetch fallback:", err);
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Filter products by category
@@ -360,4 +355,3 @@ export default function Home({ onAddToCart, onToggleWishlist, wishlist = [] }) {
     </div>
   );
 }
-
